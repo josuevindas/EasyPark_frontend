@@ -1,0 +1,34 @@
+.Layout-top{
+    display: flex;
+    flex-direction: column;
+    min-height: 10vh;
+
+}
+
+.Layout-top nav{
+    background-color:white;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    align-items: center;
+    width: 100vw;
+    height: 60px;
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Lo mantiene por encima de otros elementos */
+    position: fixed;
+
+}
+
+
+.Layout-top nav a{
+    color: black;
+    padding: 15px;
+    margin: 13px;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.Layout-top nav a:hover{
+   background-color: orange;
+}
