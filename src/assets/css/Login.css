@@ -1,6 +1,6 @@
 .wrapper-login{
     display: flex;
-    min-height: 80vh;
+    min-height: 90vh;
     align-items: center;
     
 
@@ -15,17 +15,17 @@
     border: solid 0.5px black;
     background-color: #4f5f76;
    
-   
 }
 
 
 
-.wrapper-login .form .form-group  label, span {
+.wrapper-login .form .form-group  label {
     margin-top: 1rem;
     margin-bottom: 0.5rem;
     color: black;
     font: 1em sans-serif;
     font-weight: 600;
+    margin: 10px;
    
 }
 
