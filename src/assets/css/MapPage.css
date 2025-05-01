@@ -1,0 +1,10 @@
+.map-page {
+    margin-top: 60px; /* Ajusta según la altura de tu header */
+    padding: 20px;
+  }
+  
+  .map-container {
+    height: calc(100vh - 100px); /* 100vh - (header + padding) */
+    width: 100%;
+    border: 1px solid #ddd; /* Opcional */
+  }

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-
+import logo from '../assets/img/logo-easyPark.jpeg';
 import '../assets/css/Layout.css';
 import { useState } from "react";
 
@@ -32,7 +32,18 @@ export const Layout=({children})=>{
         <div className="Layout-top">
             <header>
                 <nav>
+                <div style={{ display: 'flex' }}> 
+                    <Link to="/" className="logo-container">
+                        <img 
+                        src={logo} 
+                        alt="EasyPark Logo"
+                        className="logo-img" // Clase para el logo
+                        />
+                        <span className="logo-text">EasyPark</span>
+                    </Link>
                     <Link to='/'>Inicio</Link>
+                    <Link to='/registro'>Registro</Link>
+                </div>
                     <Link to='/about'>Acerca de nosotros</Link>
                 </nav>
             </header>
