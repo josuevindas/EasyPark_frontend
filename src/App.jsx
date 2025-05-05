@@ -12,7 +12,7 @@ function App() {
     <div>
       <Layout>
         <Routes>
-          <Route path="/" element={<ParkAdm />} />   {/* ✅ Ahora muestra ParkAdm */}
+         /* <Route path="/" element={<ParkAdm />} />   {/* ✅ Ahora muestra ParkAdm */}*/
           <Route path="/login" element={<Login />} />
         </Routes>
       </Layout>

@@ -33,7 +33,7 @@ export default function ParkingBackgroundPage() {
 
     return (
         <div className="parking-bg">
-            <div className="content-box">
+            <div className="content-box ">
                 <h1 className="header-with-logo">
                     <img src="/src/assets/img/logo-easyPark.jpeg" alt="EasyPark Logo" className="logo" />
                     Parqueo/Garaje
@@ -47,15 +47,18 @@ export default function ParkingBackgroundPage() {
                         value={nombreParqueo}
                         onChange={(e) => setNombreParqueo(e.target.value)}
                     />
-
+               </div>
+                <div className="form-section">
                     <input
                         type="text"
-                        placeholder="Tamaño del espacio"
+                        placeholder="Tamaño del espacio del parqueo"
                         className="easypark-input"
                         value={tamanoEspacio}
                         onChange={(e) => setTamanoEspacio(e.target.value)}
-                    />
-
+                    />  
+                </div>
+                    
+                <div className="form-section">
                     <input
                         type="number"
                         placeholder="Cantidad de campos"
@@ -63,7 +66,9 @@ export default function ParkingBackgroundPage() {
                         value={cantidadCampos}
                         onChange={(e) => setCantidadCampos(e.target.value)}
                     />
-
+                 </div>
+                <div className="form-section">
+                    
                     <input
                         type="text"
                         placeholder="Longitud"
