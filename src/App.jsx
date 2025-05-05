@@ -6,6 +6,7 @@ import { Route, Routes, Link } from 'react-router-dom'
 import { Login } from './pages/Login'
 import  {Layout}  from './components/Layout.jsx'
 import { ReservePage } from './pages/ReservePage'
+import { MapPage } from './pages/MapPage'
 
 function App() {
 
@@ -14,7 +15,7 @@ function App() {
       <Layout>
         <Routes>
           {/* Usamos `element` para pasar el componente que se renderiza */}
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<MapPage />} />
           <Route path="/buscar" element={<ReservePage />} />
         </Routes>
       </Layout>
