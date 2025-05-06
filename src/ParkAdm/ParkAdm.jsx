@@ -6,8 +6,8 @@ export default function ParkingBackgroundPage() {
     const [nuevoVehiculo, setNuevoVehiculo] = useState("");
     const [nuevoPrecio, setNuevoPrecio] = useState("");
     const [filaSeleccionada, setFilaSeleccionada] = useState(null);
-
-    // Nuevos campos
+    const [tipoParqueo, setTipoParqueo] = useState("");
+    
     const [nombreParqueo, setNombreParqueo] = useState("");
     const [tamanoEspacio, setTamanoEspacio] = useState("");
     const [cantidadCampos, setCantidadCampos] = useState("");
@@ -32,106 +32,106 @@ export default function ParkingBackgroundPage() {
     };
 
     return (
-        <div className="parking-bg">
-            <div className="content-box ">
-                <h1 className="header-with-logo">
-                    <img src="/src/assets/img/logo-easyPark.jpeg" alt="EasyPark Logo" className="logo" />
-                    Parqueo/Garaje
-                </h1>
-
-                <div className="form-section">
-                    <input
-                        type="text"
-                        placeholder="Nombre del parqueo/garaje"
-                        className="easypark-input"
-                        value={nombreParqueo}
-                        onChange={(e) => setNombreParqueo(e.target.value)}
-                    />
-               </div>
-                <div className="form-section">
-                    <input
-                        type="text"
-                        placeholder="Tamaño del espacio del parqueo"
-                        className="easypark-input"
-                        value={tamanoEspacio}
-                        onChange={(e) => setTamanoEspacio(e.target.value)}
-                    />  
-                </div>
+        <div className="parking-bg container-fluid py-4">
+        <div className="content-box mx-auto p-4 shadow rounded bg-white bg-opacity-75">
+          <h1 className="header-with-logo text-center mb-4 d-flex justify-content-center align-items-center gap-3">
+            Parqueo/Garaje
+          </h1>
+          
+          <div className="row g-2 mb-3 justify-content-center">
+             <div className="col-md-6">
+                <select
+                    className="form-select"
                     
-                <div className="form-section">
-                    <input
-                        type="number"
-                        placeholder="Cantidad de campos"
-                        className="easypark-input"
-                        value={cantidadCampos}
-                        onChange={(e) => setCantidadCampos(e.target.value)}
-                    />
-                 </div>
-                <div className="form-section">
-                    
-                    <input
-                        type="text"
-                        placeholder="Longitud"
-                        className="easypark-input"
-                        value={longitud}
-                        onChange={(e) => setLongitud(e.target.value)}
-                    />
-
-                    <input
-                        type="text"
-                        placeholder="Latitud"
-                        className="easypark-input"
-                        value={latitud}
-                        onChange={(e) => setLatitud(e.target.value)}
-                    />
-                </div>
-
-                <div className="input-row">
-                    <input
-                        type="text"
-                        placeholder="Tipo de vehículo"
-                        value={nuevoVehiculo}
-                        onChange={(e) => setNuevoVehiculo(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && agregarVehiculo()}
-                        className="easypark-input"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Precio"
-                        value={nuevoPrecio}
-                        onChange={(e) => setNuevoPrecio(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && agregarVehiculo()}
-                        className="easypark-input"
-                    />
-                    <button className="add-btn" onClick={agregarVehiculo}>+</button>
-                    <button className="delete-btn" onClick={eliminarVehiculo}>-</button>
-                </div>
-
-                <table className="easypark-table">
-                    <thead>
-                        <tr>
-                            <th>Vehículo</th>
-                            <th>Precio</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {vehiculos.length === 0 ? (
-                            <tr><td colSpan="2" style={{ textAlign: "center" }}>No hay vehículos registrados</td></tr>
-                        ) : (
-                            vehiculos.map((v, i) => (
-                                <tr
-                                    key={i}
-                                    onClick={() => setFilaSeleccionada(i)}
-                                    className={filaSeleccionada === i ? "selected-row" : ""}
-                                >
-                                    <td>{v.tipo}</td>
-                                    <td>{v.precio}</td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                    aria-label="Default select example"
+               >
+                    <option value="Estacionamientos">Estacionamientos</option>
+                    <option value="Garajes Privados">Garajes Privados</option>
+                </select>
             </div>
         </div>
+
+          <div className="row g-2 mb-3 justify-content-center">
+            <div className="col-md-6">
+              <input type="text" placeholder="Nombre del parqueo/garaje" className="form-control"
+                value={nombreParqueo} onChange={(e) => setNombreParqueo(e.target.value)} />
+            </div>
+          </div>
+      
+          <div className="row g-2 mb-3 justify-content-center">
+            <div className="col-md-6">
+              <input type="text" placeholder="Tamaño del espacio del parqueo" className="form-control"
+                value={tamanoEspacio} onChange={(e) => setTamanoEspacio(e.target.value)} />
+            </div>
+          </div>
+      
+          <div className="row g-2 mb-3 justify-content-center">
+            <div className="col-md-3">
+              <input type="number" placeholder="Cantidad de campos" className="form-control"
+                value={cantidadCampos} onChange={(e) => setCantidadCampos(e.target.value)} />
+            </div>
+          </div>
+      
+          <div className="row g-2 mb-3 justify-content-center">
+            <div className="col-md-3">
+              <input type="text" placeholder="Longitud" className="form-control"
+                value={longitud} onChange={(e) => setLongitud(e.target.value)} />
+            </div>
+            <div className="col-md-3">
+              <input type="text" placeholder="Latitud" className="form-control"
+                value={latitud} onChange={(e) => setLatitud(e.target.value)} />
+            </div>
+          </div>
+      
+          <div className="row g-2 mb-3 justify-content-center">
+            <div className="col-md-3">
+              <input type="text" placeholder="Tipo de vehículo" className="form-control"
+                value={nuevoVehiculo}
+                onChange={(e) => setNuevoVehiculo(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && agregarVehiculo()}
+              />
+            </div>
+            <div className="col-md-3">
+              <input type="text" placeholder="Precio" className="form-control"
+                value={nuevoPrecio}
+                onChange={(e) => setNuevoPrecio(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && agregarVehiculo()}
+              />
+            </div>
+            <div className="col-auto d-flex gap-2 align-items-center">
+              <button className="btn btn-primary" onClick={agregarVehiculo}>+</button>
+              <button className="btn btn-danger" onClick={eliminarVehiculo}>-</button>
+            </div>
+          </div>
+      
+          <div className="table-responsive">
+            <table className="table table-bordered text-center">
+              <thead className="table-light">
+                <tr>
+                  <th>Vehículo</th>
+                  <th>Precio</th>
+                </tr>
+              </thead>
+              <tbody>
+                {vehiculos.length === 0 ? (
+                  <tr><td colSpan="2">No hay vehículos registrados</td></tr>
+                ) : (
+                  vehiculos.map((v, i) => (
+                    <tr
+                      key={i}
+                      className={filaSeleccionada === i ? "table-primary fw-bold" : ""}
+                      onClick={() => setFilaSeleccionada(i)}
+                    >
+                      <td>{v.tipo}</td>
+                      <td>{v.precio}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
     );
 }
