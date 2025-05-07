@@ -7,7 +7,7 @@ import { Login } from './pages/Login'
 import  {Layout}  from './components/Layout.jsx'
 import { ReservePage } from './pages/ReservePage'
 import { MapPage } from './pages/MapPage'
-import { ParkAdm } from './ParkAdm/ParkAdm'; 
+import   { ParkAdm }  from './pages/ParkAdm'; 
 
 function App() {
 
