@@ -1,3 +1,4 @@
+// Nuevo código para incluir modal de búsqueda y actualización de mapa
 import React, { useEffect, useState, useRef } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../assets/css/MapPage.css';
@@ -8,8 +9,11 @@ export const MapPage = () => {
   const [error, setError] = useState(null);
   const [locationInfo, setLocationInfo] = useState('');
   const [nearbyParkings, setNearbyParkings] = useState([]);
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
+  const searchBoxRef = useRef(null);
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -104,7 +108,7 @@ export const MapPage = () => {
       initMap();
     } else {
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD7hTh2iDt3rt_aHNRp9E-GhJC8JOQKXIc&libraries=places&callback=initMap`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap`;
       script.async = true;
       script.defer = true;
       script.onerror = () => {
@@ -121,61 +125,78 @@ export const MapPage = () => {
     };
   }, [userLocation]);
 
-  useEffect(() => {
+  const handleSearch = () => {
+    if (!searchQuery || !mapInstance.current) return;
+
+    const service = new window.google.maps.places.PlacesService(mapInstance.current);
+    const request = {
+      query: searchQuery,
+      fields: ['name', 'geometry']
+    };
+
+    service.findPlaceFromQuery(request, (results, status) => {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK && results[0]) {
+        const location = results[0].geometry.location;
+        mapInstance.current.setCenter(location);
+        mapInstance.current.setZoom(16);
+        setUserLocation({ lat: location.lat(), lng: location.lng() });
+        setShowSearchModal(false);
+      }
+    });
+  };
+
+  const findNearbyParkings = () => {
     if (!userLocation || !window.google || !window.google.maps) return;
 
-    const findNearbyParkings = () => {
-      const service = new window.google.maps.places.PlacesService(mapInstance.current);
-    
-      const request = {
-        location: new window.google.maps.LatLng(userLocation.lat, userLocation.lng),
-        radius: 10000, // 10km
-        type: 'parking',
-        keyword: 'parqueo'
-      };
-    
-      service.nearbySearch(request, (results, status) => {
-        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-          const parkingsWithDistance = results.map(place => {
-            const distance = calculateDistance(
-              userLocation.lat,
-              userLocation.lng,
-              place.geometry.location.lat(),
-              place.geometry.location.lng()
-            );
-    
-            // Crear marcador con ícono azul cuadrado
-            new window.google.maps.Marker({
-              position: place.geometry.location,
-              map: mapInstance.current,
-              title: place.name,
-              icon: {
-                path: "M 0 -10 L 10 10 L -10 10 Z",
-                fillColor: "#4285F4",
-                fillOpacity: 1,
-                strokeWeight: 1,
-                strokeColor: "#2a65c4",
-                scale: 1
-              }
-            });
-    
-            return {
-              id: place.place_id,
-              name: place.name,
-              distance,
-              location: {
-                lat: place.geometry.location.lat(),
-                lng: place.geometry.location.lng()
-              }
-            };
-          });
-    
-          setNearbyParkings(parkingsWithDistance);
-        }
-      });
+    const service = new window.google.maps.places.PlacesService(mapInstance.current);
+    const request = {
+      location: new window.google.maps.LatLng(userLocation.lat, userLocation.lng),
+      radius: 10000,
+      type: 'parking',
+      keyword: 'parqueo'
     };
-    
 
+    service.nearbySearch(request, (results, status) => {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+        const parkingsWithDistance = results.map(place => {
+          const distance = calculateDistance(
+            userLocation.lat,
+            userLocation.lng,
+            place.geometry.location.lat(),
+            place.geometry.location.lng()
+          );
+
+          new window.google.maps.Marker({
+            position: place.geometry.location,
+            map: mapInstance.current,
+            title: place.name,
+            icon: {
+              path: "M 0 -10 L 10 10 L -10 10 Z",
+              fillColor: "#4285F4",
+              fillOpacity: 1,
+              strokeWeight: 1,
+              strokeColor: "#2a65c4",
+              scale: 1
+            }
+          });
+
+          return {
+            id: place.place_id,
+            name: place.name,
+            distance,
+            location: {
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng()
+            }
+          };
+        });
+
+        setNearbyParkings(parkingsWithDistance);
+      }
+    });
+  };
+
+  useEffect(() => {
     findNearbyParkings();
   }, [userLocation]);
 
@@ -215,12 +236,30 @@ export const MapPage = () => {
 
       <div className="location-info-box">
         <span className="location-text">{locationInfo || "Obteniendo ubicación..."}</span>
-        <button className="search-circle-button" aria-label="Buscar" />
+        <button className="search-circle-button" onClick={() => setShowSearchModal(true)} aria-label="Buscar" />
       </div>
 
-      {/* Lista de parqueos superpuesta */}
+      {showSearchModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h5>Buscar lugar</h5>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="form-control"
+              placeholder="Ej. San José, Costa Rica"
+            />
+            <div className="mt-3 d-flex justify-content-between">
+              <button className="btn btn-primary" onClick={handleSearch}>Buscar</button>
+              <button className="btn btn-secondary" onClick={() => setShowSearchModal(false)}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="parkings-list-container">
-        <h5 className="parkings-list-title">Parqueos cercanos </h5>
+        <h5 className="parkings-list-title">Parqueos cercanos</h5>
         <div className="parkings-list">
           {nearbyParkings.length > 0 ? (
             nearbyParkings.map(parking => (
@@ -239,7 +278,6 @@ export const MapPage = () => {
         </div>
       </div>
 
-      {/* Mapa al fondo */}
       <div ref={mapRef} className="map-fullscreen"></div>
     </div>
   );
