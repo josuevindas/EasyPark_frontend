@@ -10,10 +10,16 @@ export const MapPage = () => {
   const [locationInfo, setLocationInfo] = useState('');
   const [nearbyParkings, setNearbyParkings] = useState([]);
   const [showSearchModal, setShowSearchModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [formData, setFormData] = useState({
+    location: '',
+    arrivalDate: '',
+    arrivalTime: '',
+    departureDate: '',
+    departureTime: ''
+  });
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
-  const searchBoxRef = useRef(null);
+  const directionsRenderer = useRef(null);
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -108,7 +114,7 @@ export const MapPage = () => {
       initMap();
     } else {
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD7hTh2iDt3rt_aHNRp9E-GhJC8JOQKXIc&libraries=places&callback=initMap`;
       script.async = true;
       script.defer = true;
       script.onerror = () => {
@@ -124,6 +130,17 @@ export const MapPage = () => {
       if (window.initMap) delete window.initMap;
     };
   }, [userLocation]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSearchQuery(formData.location);
+    handleSearch();
+  };
 
   const handleSearch = () => {
     if (!searchQuery || !mapInstance.current) return;
@@ -213,9 +230,42 @@ export const MapPage = () => {
   };
 
   const focusOnParking = (parking) => {
-    mapInstance.current.setCenter(parking.location);
-    mapInstance.current.setZoom(16);
+    if (!mapInstance.current || !window.google || !userLocation) return;
+  
+    // Limpia la ruta anterior si existe
+    if (directionsRenderer.current) {
+      directionsRenderer.current.setMap(null);
+      directionsRenderer.current = null;
+    }
+  
+    const directionsService = new window.google.maps.DirectionsService();
+    directionsRenderer.current = new window.google.maps.DirectionsRenderer({
+      map: mapInstance.current,
+      suppressMarkers: false
+    });
+  
+    const origin = new window.google.maps.LatLng(userLocation.lat, userLocation.lng);
+    const destination = new window.google.maps.LatLng(parking.location.lat, parking.location.lng);
+  
+    const request = {
+      origin,
+      destination,
+      travelMode: window.google.maps.TravelMode.DRIVING
+    };
+  
+    directionsService.route(request, (result, status) => {
+      if (status === window.google.maps.DirectionsStatus.OK) {
+        directionsRenderer.current.setDirections(result);
+      } else {
+        console.error("No se pudo obtener la ruta:", status);
+      }
+    });
+  
+    // También centramos el mapa en el destino
+    mapInstance.current.setCenter(destination);
+    mapInstance.current.setZoom(15);
   };
+  
 
   return (
     <div className="map-fullscreen-container">
@@ -241,19 +291,58 @@ export const MapPage = () => {
 
       {showSearchModal && (
         <div className="modal-overlay">
-          <div className="modal-content">
-            <h5>Buscar lugar</h5>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="form-control"
-              placeholder="Ej. San José, Costa Rica"
-            />
-            <div className="mt-3 d-flex justify-content-between">
-              <button className="btn btn-primary" onClick={handleSearch}>Buscar</button>
-              <button className="btn btn-secondary" onClick={() => setShowSearchModal(false)}>Cancelar</button>
-            </div>
+          <div className="reserve-wrapper">
+            <form className="reserve-form" onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="location">¿A dónde va?</label>
+                <input
+                  type="text"
+                  name="location"
+                  id="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  className="form-control"
+                />
+              </div>
+              <div className="form-group">
+                <label>Fecha y hora de llegada</label>
+                <input
+                  type="date"
+                  name="arrivalDate"
+                  value={formData.arrivalDate}
+                  onChange={handleChange}
+                  className="form-control"
+                />
+                <input
+                  type="time"
+                  name="arrivalTime"
+                  value={formData.arrivalTime}
+                  onChange={handleChange}
+                  className="form-control"
+                />
+              </div>
+              <div className="form-group">
+                <label>Fecha y hora de salida</label>
+                <input
+                  type="date"
+                  name="departureDate"
+                  value={formData.departureDate}
+                  onChange={handleChange}
+                  className="form-control"
+                />
+                <input
+                  type="time"
+                  name="departureTime"
+                  value={formData.departureTime}
+                  onChange={handleChange}
+                  className="form-control"
+                />
+              </div>
+              <div className="mt-3 d-flex justify-content-between">
+                <button type="submit" className="btn btn-primary">Buscar</button>
+                <button type="button" className="btn btn-secondary" onClick={() => setShowSearchModal(false)}>Cancelar</button>
+              </div>
+            </form>
           </div>
         </div>
       )}
