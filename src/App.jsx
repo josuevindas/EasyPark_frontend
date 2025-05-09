@@ -16,7 +16,8 @@ function App() {
       <Layout>
         <Routes>
           {/* Usamos `element` para pasar el componente que se renderiza */}
-          <Route path="/" element={<ParkAdm />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/Adm" element={<ParkAdm />} />
           <Route path="/map" element={<MapPage />} />
           <Route path="/buscar" element={<ReservePage />} />
         </Routes>
