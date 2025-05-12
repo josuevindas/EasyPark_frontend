@@ -29,13 +29,14 @@
    
 }
 
-body{
-    background-image: url('../img/ParqueFondo.png');
-    background-repeat: repeat;
+body {
+    background-image: linear-gradient(to bottom right, #0288D1, #03A9F4);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     background-size: cover;
-    background-position: center;
-
 }
+
+
 
 
 .wrapper-login .form .form-group img{

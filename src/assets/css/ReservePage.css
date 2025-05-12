@@ -57,11 +57,14 @@ button:hover {
 */
 
 body {
-  background-image: url('../img/ParqueFondo.png');
-  background-repeat: repeat;
-  background-size: cover;
-  background-position: center;
+    background-image: linear-gradient(to bottom right, #0288D1, #03A9F4);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
 }
+
+
+
 
 .reserve-wrapper {
   display: flex;

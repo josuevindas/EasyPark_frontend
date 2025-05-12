@@ -17,6 +17,7 @@ export const ParkAdm = () => {
   const [alturaEspacio, setAlturaEspacio] = useState("");
   const [anchuraEspacio, setAnchuraEspacio] = useState("");
   const [cantidadCampos, setCantidadCampos] = useState("");
+  const [disponibilidad, setDisponibilidad] = useState(true);
   const [longitud, setLongitud] = useState("");
   const [direccion, setDireccion] = useState("");
   const [latitud, setLatitud] = useState("");
@@ -62,51 +63,71 @@ export const ParkAdm = () => {
     }
   };
 
-  const handleRegistrar = async () => {
-    const token = localStorage.getItem("easypark_token");
+ const handleRegistrar = async () => {
+  const token = localStorage.getItem("easypark_token");
 
-    if (!token) {
-      setAlertCustom({ type: 'error', message: 'No autorizado' });
-      return;
+  if (!token) {
+    setAlertCustom({ type: 'error', message: 'No autorizado' });
+    return;
+  }
+
+  // Validaciones condicionales según visibilidad
+  const errores = [];
+
+  if (!tipoParqueo) errores.push('Tipo de parqueo es requerido.');
+  if (tipoParqueo !== "Garajes Privados" && !nombreParqueo.trim()) errores.push('Nombre del parqueo es requerido.');
+  if (!direccion.trim()) errores.push('Dirección es requerida.');
+  if (!longitud.trim()) errores.push('Longitud es requerida.');
+  if (!latitud.trim()) errores.push('Latitud es requerida.');
+  if (!horario.trim()) errores.push('Horario es requerido.');
+  if (!alturaEspacio.trim()) errores.push('Altura del espacio es requerida.');
+  if (!anchuraEspacio.trim()) errores.push('Anchura del espacio es requerida.');
+  if (!cantidadCampos.trim()) errores.push('Cantidad de campos es requerida.');
+  if (vehiculos.length === 0) errores.push('Debe agregar al menos un vehículo.');
+
+  if (errores.length > 0) {
+    setAlertCustom({ type: 'error', message: errores.join(' ') });
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:3001/api/estacionamientos/guardar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        tipoParqueo,
+        nombre: nombreParqueo,
+        direccion,
+        longitud,
+        latitud,
+        horario,
+        altura: alturaEspacio,
+        anchura: anchuraEspacio,
+        cantidadCampos,
+        disponibilidad,
+        fecha_registro: fechaRegistro,
+        vehiculos: vehiculos.map(v => ({ tipo_vehiculo: v.tipo, tarifa_hora: v.precio }))
+      })
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      setAlertCustom({ type: 'success', message: 'Parqueo registrado con éxito' });
+      resetFormulario();
+    } else {
+      setAlertCustom({ type: 'error', message: result.error || 'No se pudo registrar' });
     }
+  } catch (error) {
+    console.error("❌ Error al registrar:", error);
+    setAlertCustom({ type: 'error', message: 'Error de red' });
+  }
+};
 
-    try {
-      
-      const response = await fetch("http://localhost:3001/api/estacionamientos/guardar", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          tipoParqueo,
-          nombre: nombreParqueo,
-          direccion,
-          longitud,
-          latitud,
-          horario,
-          altura: alturaEspacio,
-          anchura: anchuraEspacio,
-          cantidadCampos,
-          fecha_registro: fechaRegistro,
-          vehiculos: vehiculos.map(v => ({ tipo_vehiculo: v.tipo, tarifa_hora: v.precio }))
-        })
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setAlertCustom({ type: 'success', message: 'Parqueo registrado con éxito' });
-        resetFormulario(); 
-
-      } else {
-        setAlertCustom({ type: 'error', message: result.error || 'No se pudo registrar' });
-      }
-    } catch (error) {
-      console.error("❌ Error al registrar:", error);
-      setAlertCustom({ type: 'error', message: 'Error de red' });
-    }
-  };
+  
 
   const handleCloseAlert = () => {
     setAlertCustom({ type: '', message: '' });
