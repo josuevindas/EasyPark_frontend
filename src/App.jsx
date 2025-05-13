@@ -7,7 +7,10 @@ import { Login } from './pages/Login'
 import  {Layout}  from './components/Layout.jsx'
 import { ReservePage } from './pages/ReservePage'
 import { MapPage } from './pages/MapPage'
-import   { ParkAdm }  from './pages/ParkAdm'; 
+import   { ParkAdm }  from './pages/ParkAdm'
+import{Registrar} from './pages/Registrar'
+import { Pendiente} from './pages/pendiente.jsx'
+
 
 function App() {
 
@@ -17,6 +20,8 @@ function App() {
         <Routes>
           {/* Usamos `element` para pasar el componente que se renderiza */}
           <Route path="/" element={<Login />} />
+          <Route path="/Pendiente" element={<Pendiente />} />
+           <Route path="/Registrar" element={<Registrar />} />
           <Route path="/Adm" element={<ParkAdm />} />
           <Route path="/map" element={<MapPage />} />
           <Route path="/buscar" element={<ReservePage />} />

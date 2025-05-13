@@ -39,8 +39,8 @@ export const Layout = ({ children, isLoggedIn }) => {
                             />
                             <span className="logo-text">EasyPark</span>
                         </Link>
-                        <Link to='/'>Inicio</Link>
-                        {isLoggedIn && <Link to='/registro'>Registro</Link>}
+                        <Link to='/Adm'>Inicio</Link>
+                        <Link to='/Registrar'>Registro</Link>
                     </div>
                     <Link to='/about'>Acerca de nosotros</Link>
                 </nav>

@@ -16,8 +16,7 @@ export const ParkAdm = () => {
   const [nombreParqueo, setNombreParqueo] = useState("");
   const [alturaEspacio, setAlturaEspacio] = useState("");
   const [anchuraEspacio, setAnchuraEspacio] = useState("");
-  const [cantidadCampos, setCantidadCampos] = useState("");
-  const [disponibilidad, setDisponibilidad] = useState(true);
+  const [disponibilidad, setCantidadCampos] = useState("");
   const [longitud, setLongitud] = useState("");
   const [direccion, setDireccion] = useState("");
   const [latitud, setLatitud] = useState("");
@@ -30,7 +29,6 @@ export const ParkAdm = () => {
     setDireccion("");
     setLatitud("");
     setLongitud("");
-    setDisponibilidad(true); // si querés mantenerlo siempre en true
     setHorario("");
     setAlturaEspacio("");
     setAnchuraEspacio("");
@@ -89,16 +87,21 @@ export const ParkAdm = () => {
     setAlertCustom({ type: 'error', message: errores.join(' ') });
     return;
   }
+  url = "";
+  if (tipoParqueo === "Garajes Privados") {
+      url = "http://localhost:3001/api/garajesprivados/guardar";
+    } else {
+      url = "http://localhost:3001/api/estacionamientos/guardar";
+    }
 
   try {
-    const response = await fetch("http://localhost:3001/api/estacionamientos/guardar", {
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({
-        tipoParqueo,
         nombre: nombreParqueo,
         direccion,
         longitud,
@@ -106,7 +109,6 @@ export const ParkAdm = () => {
         horario,
         altura: alturaEspacio,
         anchura: anchuraEspacio,
-        cantidadCampos,
         disponibilidad,
         fecha_registro: fechaRegistro,
         vehiculos: vehiculos.map(v => ({ tipo_vehiculo: v.tipo, tarifa_hora: v.precio }))
@@ -156,7 +158,7 @@ export const ParkAdm = () => {
         </div>
 
          
-      <div className="row g-2 mb-3 justify-content-center">
+        <div className="row g-2 mb-3 justify-content-center">
           {tipoParqueo !== "Garajes Privados" && (
            <div className="row g-2 mb-3 justify-content-center">
               <div className="col-md-5">
@@ -196,7 +198,7 @@ export const ParkAdm = () => {
               <div className="row g-2 mb-3 justify-content-center">
                 <div className="col-md-4">
                   <input type="number" placeholder="Cantidad de campos" className="form-control"
-                    value={cantidadCampos} onChange={(e) => setCantidadCampos(e.target.value)} />
+                    value={disponibilidad} onChange={(e) => setCantidadCampos(e.target.value)} />
                 </div>
               </div>
           

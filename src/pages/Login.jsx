@@ -42,13 +42,33 @@ export const Login = () => {
       const token = await userCredential.user.getIdToken();
 
       localStorage.setItem('easypark_token', token);
-      setAlertCustom({
-        type: 'success',
-        message: 'Inicio de sesión exitoso'
+      const response = await fetch(`http://localhost:3001/login/email/${email}/password/${password}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
 
-      // 👇 Redirigir a la página de administración
-      navigate('/Adm');
+      if (!response.ok) {
+        throw new Error('No se pudo obtener información del usuario');
+      }
+
+      const usuario = await response.json();
+
+      // ✅ Guardar tipo de usuario en localStorage
+      localStorage.setItem('rol', usuario.tipo_usuarios);
+
+      setAlertCustom({ type: 'success', message: 'Inicio de sesión exitoso' });
+      if (usuario.tipo_usuarios === 'admin') {
+        navigate('/Adm');
+      }else if (tipoUsuarios === 'propietario') {
+
+      }else if (tipoUsuarios === 'cliente') {
+
+    }else if (tipoUsuarios === 'adminp' || tipoUsuarios === 'propietariop') {
+        navigate('/Pendiente');
+      
+      }
 
     } catch (error) {
       console.error('❌ Error al iniciar sesión:', error.message);
