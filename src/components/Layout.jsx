@@ -7,12 +7,17 @@ export const Layout = ({ children, isLoggedIn }) => {
 
     // Estado para mostrar Modal de confirmación u error
     const [isVisibleModal, setIsVisibleModal] = useState(false);
-
+    const [rolUsuario, setRolUsuario] = useState(null);
     // Valores para el propio modal
     const [confirm, setConfirm] = useState({ type: '', message: '' });
 
     const [dataCurrentStep, setDataCurrentStep] = useState('');
-
+     useEffect(() => {
+        const tipoUsuario = localStorage.getItem("rol");
+        
+        setRolUsuario(tipoUsuario);
+       
+    }, []);
     const HandleCurrentStep = (data) => {
         setDataCurrentStep(data);
     };
@@ -39,8 +44,22 @@ export const Layout = ({ children, isLoggedIn }) => {
                             />
                             <span className="logo-text">EasyPark</span>
                         </Link>
-                        <Link to='/Adm'>Inicio</Link>
-                        <Link to='/Registrar'>Registro</Link>
+                        {rolUsuario === "Admin" && (
+                            <>
+                                <Link to='/Adm'>Registrar Parqueos/Garajes</Link>
+                                <Link to='/AdmPendientes'>Pendientes</Link>
+                            </>
+                        )}
+
+                        {rolUsuario === "propietario" && (
+                            <>
+                                <Link to='/Adm'>Registrar Parqueos/Garajes</Link>
+                            </>
+                        )}
+
+                        {rolUsuario === null && (
+                            <Link to='/Registrar'>Registro</Link>
+                        )}
                     </div>
                     <Link to='/about'>Acerca de nosotros</Link>
                 </nav>

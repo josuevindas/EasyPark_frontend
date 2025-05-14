@@ -42,11 +42,16 @@ export const Login = () => {
       const token = await userCredential.user.getIdToken();
 
       localStorage.setItem('easypark_token', token);
-      const response = await fetch(`http://localhost:3001/login/email/${email}/password/${password}`, {
-        method: 'GET',
+      const response = await fetch('http://localhost:3001/api/login/login', {
+        method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
       });
 
       if (!response.ok) {
@@ -56,20 +61,22 @@ export const Login = () => {
       const usuario = await response.json();
 
       // ✅ Guardar tipo de usuario en localStorage
+      
       localStorage.setItem('rol', usuario.tipo_usuarios);
-
-      setAlertCustom({ type: 'success', message: 'Inicio de sesión exitoso' });
-      if (usuario.tipo_usuarios === 'admin') {
+      
+     setAlertCustom({ type: 'success', message: 'Inicio de sesión exitoso' });
+     
+      if (localStorage.getItem('rol')=== 'Admin') {
         navigate('/Adm');
-      }else if (tipoUsuarios === 'propietario') {
+      }else if (localStorage.getItem('rol') === 'propietario') {
 
-      }else if (tipoUsuarios === 'cliente') {
+      }else if (localStorage.getItem('rol') === 'cliente') {
 
-    }else if (tipoUsuarios === 'adminp' || tipoUsuarios === 'propietariop') {
+    }else if (localStorage.getItem('rol') === 'adminp' || localStorage.getItem('rol') === 'propietariop') {
         navigate('/Pendiente');
       
       }
-
+      
     } catch (error) {
       console.error('❌ Error al iniciar sesión:', error.message);
       setAlertCustom({
@@ -113,6 +120,7 @@ export const Login = () => {
                   type="password"
                   className="form-control"
                   id="password"
+                  autoComplete="off"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}

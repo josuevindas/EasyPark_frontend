@@ -10,6 +10,7 @@ import { MapPage } from './pages/MapPage'
 import   { ParkAdm }  from './pages/ParkAdm'
 import{Registrar} from './pages/Registrar'
 import { Pendiente} from './pages/pendiente.jsx'
+import { AdmPendientes } from './pages/AdmPendientes.jsx' 
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Routes>
           {/* Usamos `element` para pasar el componente que se renderiza */}
           <Route path="/" element={<Login />} />
+          <Route path="/AdmPendientes" element={<AdmPendientes />} />
           <Route path="/Pendiente" element={<Pendiente />} />
            <Route path="/Registrar" element={<Registrar />} />
           <Route path="/Adm" element={<ParkAdm />} />

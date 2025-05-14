@@ -4,13 +4,23 @@ import '../assets/css/Registrar.css';
 import '../assets/css/Modal.css';
 import { Alert, Confirm } from "../components/ModalAlert";
 import { useNavigate } from "react-router-dom";
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBMNaeCd1kmXmdc61ikIQjC7mses2toqAw",
+  authDomain: "easypark-3f372.firebaseapp.com"
+};
+
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
 
 export const Registrar = () => {
   // Estados para los datos del formulario
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [tipoUsuarios, setTipoUsuarios] = useState(null);
+  const [tipoUsuarios, setTipoUsuarios] = useState('');
   const [telefono, setTelefono] = useState('');
 const [alertCustom, setAlertCustom] = useState({ type: '', message: '' });
 
@@ -19,24 +29,22 @@ const [alertCustom, setAlertCustom] = useState({ type: '', message: '' });
       setNombre("");
       setEmail("");
       setPassword("");
-      setTipoUsuarios(null);
+      setTipoUsuarios('');
       setTelefono("");
       
     };
 
      useEffect(() => {
+        
         const token = localStorage.getItem("easypark_token");
         if (!token) {
           navigate("/");
         }
       }, []); 
- const handleRegistrar = async () => {
-  const token = localStorage.getItem("easypark_token");
-
-  if (!token) {
-    setAlertCustom({ type: 'error', message: 'No autorizado' });
-    return;
-  }
+ const handleRegistrar = async (e) => {
+    e.preventDefault()
+  
+  
 
   // Validaciones condicionales según visibilidad
   const errores = [];
@@ -69,13 +77,20 @@ const [alertCustom, setAlertCustom] = useState({ type: '', message: '' });
 
     if (response.ok) {
       setAlertCustom({ type: 'success', message: 'Ursuario registrado con éxito' });
-      resetFormulario();
-      if (tipoUsuarios === 'adminp' || tipoUsuarios === 'propietariop') {
-         setTimeout(() => {
-            navigate('/Pendiente');
-        }, 2000);
-      }else if (tipoUsuarios === 'cliente') {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const token = await userCredential.user.getIdToken();  
+      localStorage.setItem('easypark_token', token);
+       resetFormulario();
+       
+      // Redirigir según el tipo de usuario
 
+      if (tipoUsuarios === 'adminp' || tipoUsuarios === 'propietariop') {
+           
+           
+            navigate('/Pendiente');
+        
+      }else if (tipoUsuarios === 'cliente') {
+        
       }
        
     } else {
@@ -106,15 +121,15 @@ const [alertCustom, setAlertCustom] = useState({ type: '', message: '' });
         
         <div className="mb-3">
           <label htmlFor="nombre" className="form-label">Nombre</label>
-          <input type="text" className="form-control" id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
+          <input type="text" autoComplete="nombre" className="form-control" id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
         </div>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">Correo Electrónico</label>
-          <input type="email" className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input type="email"  autoComplete="email" className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </div>
         <div className="mb-3">
           <label htmlFor="password" className="form-label">Contraseña</label>
-          <input type="password" className="form-control" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <input type="password" autoComplete="current-password" className="form-control" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </div>
         <div className="mb-3">
           <label htmlFor="tipoUsuarios" className="form-label">Tipo de Usuario</label>
