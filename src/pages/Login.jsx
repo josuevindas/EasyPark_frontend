@@ -90,8 +90,8 @@ export const Login = () => {
 
   return (
     <div className="Fondo" data-theme='default'>
-      <div className="container">
-        <div className="wrapper-login">
+      <div className="content-box mx-auto p-4 shadow rounded bg-white bg-opacity-75">
+        <div className="header-with-logo text-center mb-4 d-flex justify-content-center align-items-center gap-3">
           <form onSubmit={handleLogin}>
             <div className="form">
               <div className="form-group text-center">
@@ -108,7 +108,7 @@ export const Login = () => {
                   autoComplete="off"
                   id="email"
                   name="email"
-                  value={formData.username}
+                  value={formData.email}
                   onChange={handleChange}
                 />
               </div>
