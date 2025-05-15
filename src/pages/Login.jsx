@@ -5,11 +5,8 @@ import '../assets/css/Login.css'
 import { Alert, Confirm } from "../components/ModalAlert";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {firebaseConfig} from '../config/firebaseConfig.js'
 
-const firebaseConfig = {
-  apiKey: "preguntar",
-  authDomain: "preguntar"
-};
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);

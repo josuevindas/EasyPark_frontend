@@ -6,11 +6,8 @@ import { Alert, Confirm } from "../components/ModalAlert";
 import { useNavigate } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {firebaseConfig} from '../config/firebaseConfig.js'
 
-const firebaseConfig = {
-  apiKey: "Preguntar Josue",
-  authDomain: "Preguntar Josue"
-};
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
