@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyBMNaeCd1kmXmdc61ikIQjC7mses2toqAw",
   authDomain: "easypark-3f372.firebaseapp.com",
   projectId: "easypark-3f372",
@@ -12,5 +12,4 @@ const firebaseConfig = {
   measurementId: "G-4G6XB2NEL0"
 };
 
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+
