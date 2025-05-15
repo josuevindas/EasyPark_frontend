@@ -8,8 +8,8 @@ import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBMNaeCd1kmXmdc61ikIQjC7mses2toqAw",
-  authDomain: "easypark-3f372.firebaseapp.com"
+  apiKey: "Preguntar Josue",
+  authDomain: "Preguntar Josue"
 };
 
 const app = initializeApp(firebaseConfig);
