@@ -80,21 +80,24 @@ export const ParkAdm = () => {
   if (!horario.trim()) errores.push('Horario es requerido.');
   if (!alturaEspacio.trim()) errores.push('Altura del espacio es requerida.');
   if (!anchuraEspacio.trim()) errores.push('Anchura del espacio es requerida.');
-  if (!cantidadCampos.trim()) errores.push('Cantidad de campos es requerida.');
+  if (!disponibilidad.trim()) errores.push('Cantidad de campos es requerida.');
   if (vehiculos.length === 0) errores.push('Debe agregar al menos un vehículo.');
 
   if (errores.length > 0) {
     setAlertCustom({ type: 'error', message: errores.join(' ') });
     return;
   }
-  url = "";
-  if (tipoParqueo === "Garajes Privados") {
+   let  url = "";
+ if (tipoParqueo === "Garajes Privados") {
+    console.log("Garajes Privados");
       url = "http://localhost:3001/api/garajesprivados/guardar";
     } else {
+      console.log("Estacionamientos");
       url = "http://localhost:3001/api/estacionamientos/guardar";
     }
-
   try {
+   
+    
     const response = await fetch(url, {
       method: "POST",
       headers: {

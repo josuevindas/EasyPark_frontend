@@ -69,8 +69,9 @@ export const Login = () => {
       if (localStorage.getItem('rol')=== 'Admin') {
         navigate('/Adm');
       }else if (localStorage.getItem('rol') === 'propietario') {
-
+        navigate('/Adm');
       }else if (localStorage.getItem('rol') === 'cliente') {
+        navigate('/map');
 
     }else if (localStorage.getItem('rol') === 'adminp' || localStorage.getItem('rol') === 'propietariop') {
         navigate('/Pendiente');
