@@ -56,6 +56,7 @@ export const handleRegistrar = async ({
 
     if (response.ok) {
       setAlertCustom({ type: 'success', message: 'Usuario registrado con éxito' });
+       localStorage.setItem('iduser', result.idUsuario);
       await new Promise(resolve => setTimeout(resolve, 1000));
       // Firebase auth opcional
       if (setEmailAuth) {

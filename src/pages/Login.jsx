@@ -60,6 +60,7 @@ export const Login = () => {
       // ✅ Guardar tipo de usuario en localStorage
       
       localStorage.setItem('rol', usuario.tipo_usuarios);
+      localStorage.setItem('iduser', usuario.idUsuario);
       
     
      
