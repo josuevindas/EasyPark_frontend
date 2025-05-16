@@ -72,7 +72,7 @@ export const handleRegistrar = async ({
         navigate('/Pendiente');
       } else if (tipoUsuarios === 'cliente') {
         
-        navigate('/map'); // o donde quieras
+        navigate('/Bienvenida'); // o donde quieras
       }
     } else {
       setAlertCustom({ type: 'error', message: result.error || 'No se pudo registrar' });

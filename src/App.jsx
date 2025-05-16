@@ -11,6 +11,11 @@ import   { ParkAdm }  from './pages/ParkAdm'
 import{Registrar} from './pages/Registrar'
 import { Pendiente} from './pages/pendiente.jsx'
 import { AdmPendientes } from './pages/AdmPendientes.jsx' 
+import {About} from './pages/Nosotros.jsx'
+import {Home} from './pages/Home.jsx'
+import {Bienvenida} from "./pages/Bienvenida";
+
+
 
 
 function App() {
@@ -19,8 +24,11 @@ function App() {
     <div>
       <Layout>
         <Routes>
-          {/* Usamos `element` para pasar el componente que se renderiza */}
-          <Route path="/" element={<Login />} />
+          
+          <Route path="/" element={<Home />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/Bienvenida" element={<Bienvenida />} />
+          <Route path="/About" element={<About />} />
           <Route path="/AdmPendientes" element={<AdmPendientes />} />
           <Route path="/Pendiente" element={<Pendiente />} />
            <Route path="/Registrar" element={<Registrar />} />

@@ -64,11 +64,11 @@ export const Login = () => {
      setAlertCustom({ type: 'success', message: 'Inicio de sesión exitoso' });
      
       if (localStorage.getItem('rol')=== 'Admin') {
-        navigate('/Adm');
+        navigate('/Bienvenida');
       }else if (localStorage.getItem('rol') === 'propietario') {
-        navigate('/Adm');
+        navigate('/Bienvenida');
       }else if (localStorage.getItem('rol') === 'cliente') {
-        navigate('/map');
+        navigate('/Bienvenida');
 
     }else if (localStorage.getItem('rol') === 'propietariop') {
         navigate('/Pendiente');
