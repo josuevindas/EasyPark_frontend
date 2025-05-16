@@ -7,6 +7,10 @@ import { useNavigate } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import {firebaseConfig} from '../config/firebaseConfig.js'
+import { ModalAcuerdo } from "../components/ModalAcuerdo";
+import { ModalPrivacidad } from "../components/ModalPrivacidad";
+import { useValidaciones } from "../components/useValidaciones";
+import { handleRegistrar, handleCloseAlert } from '../handlers/registrarHandlers';
 
 
 const app = initializeApp(firebaseConfig);
@@ -20,6 +24,11 @@ export const Registrar = () => {
   const [tipoUsuarios, setTipoUsuarios] = useState('');
   const [telefono, setTelefono] = useState('');
 const [alertCustom, setAlertCustom] = useState({ type: '', message: '' });
+const [showAcuerdo, setShowAcuerdo] = useState(false);
+const [showPrivacidad, setShowPrivacidad] = useState(false);
+const[aceptoTerminos, setAceptoTerminos] = useState(false);
+const erroresCampo = useValidaciones({ email, password, telefono });
+
 
   const navigate = useNavigate();
     const resetFormulario = () => {
@@ -38,69 +47,23 @@ const [alertCustom, setAlertCustom] = useState({ type: '', message: '' });
           navigate("/");
         }
       }, []); 
- const handleRegistrar = async (e) => {
-    e.preventDefault()
-  
-  
+ const onRegistrar = (e) => {
+  e.preventDefault();
+  handleRegistrar({
+    nombre,
+    email,
+    password,
+    tipoUsuarios,
+    telefono,
+    aceptoTerminos,
+    token: localStorage.getItem("easypark_token"),
+    setAlertCustom,
+    navigate,
+    resetFormulario,
+    setEmailAuth: { signInWithEmailAndPassword, auth }
+  });
+};
 
-  // Validaciones condicionales según visibilidad
-  const errores = [];
-
-  if (!nombre) errores.push('Nombre es requerido.');
-  if (!email.trim()) errores.push('Email es requerida.');
-  if (!password.trim()) errores.push('Precio es requerido.');
-  if (!tipoUsuarios) errores.push('Tipo de usuario es requerido.');
-  if (!telefono.trim()) errores.push('Teléfono es requerido.');
-  if (errores.length > 0) {
-    setAlertCustom({ type: 'error', message: errores.join(' ') });
-    return;
-  }
-
-    try {
-      const response = await fetch('http://localhost:3001/api/registro/registrar', {
-        method: 'POST',
-        headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-       },
-        body: JSON.stringify({nombre,
-      email,
-      password,
-      tipo_usuarios: tipoUsuarios,
-      telefono,
-      fecha_registro: new Date().toISOString() })
-      });
- const result = await response.json();
-
-    if (response.ok) {
-      setAlertCustom({ type: 'success', message: 'Ursuario registrado con éxito' });
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const token = await userCredential.user.getIdToken();  
-      localStorage.setItem('easypark_token', token);
-       resetFormulario();
-       
-      // Redirigir según el tipo de usuario
-
-      if (tipoUsuarios === 'adminp' || tipoUsuarios === 'propietariop') {
-           
-           
-            navigate('/Pendiente');
-        
-      }else if (tipoUsuarios === 'cliente') {
-        
-      }
-       
-    } else {
-      setAlertCustom({ type: 'error', message: result.error || 'No se pudo registrar' });
-    }
-  } catch (error) {
-    console.error("❌ Error al registrar:", error);
-    setAlertCustom({ type: 'error', message: 'Error de red' });
-  }
-  };
- const handleCloseAlert = () => {
-    setAlertCustom({ type: '', message: '' });
-  };
   return (
    
     <div className="content-box mx-auto p-4 shadow rounded bg-white bg-opacity-75">
@@ -114,36 +77,92 @@ const [alertCustom, setAlertCustom] = useState({ type: '', message: '' });
   />
 </div>
 
-      <form onSubmit={handleRegistrar}>
+      <form onSubmit={onRegistrar}>
         
         <div className="mb-3">
           <label htmlFor="nombre" className="form-label">Nombre</label>
           <input type="text" autoComplete="nombre" className="form-control" id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
         </div>
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">Correo Electrónico</label>
-          <input type="email"  autoComplete="email" className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <label htmlFor="email" className="form-label">Correo Electrónico</label>
+            <input
+              type="email"
+              className={`form-control ${erroresCampo.email ? 'is-invalid' : ''}`}
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            {erroresCampo.email && <div className="invalid-feedback">{erroresCampo.email}</div>}
         </div>
         <div className="mb-3">
           <label htmlFor="password" className="form-label">Contraseña</label>
-          <input type="password" autoComplete="current-password" className="form-control" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <input
+            type="password"
+            className={`form-control ${erroresCampo.password ? 'is-invalid' : ''}`}
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {erroresCampo.password && <div className="invalid-feedback">{erroresCampo.password}</div>}
         </div>
         <div className="mb-3">
           <label htmlFor="tipoUsuarios" className="form-label">Tipo de Usuario</label>
           <select className="form-select" id="tipoUsuarios" value={tipoUsuarios} onChange={(e) => setTipoUsuarios(e.target.value)} required>
             <option value="">Seleccionar tipo de usuario</option>
             <option value="cliente">Cliente</option>
-            <option value="adminp">Administrador</option>
             <option value="propietariop">propietario</option>
           </select>
         </div>
         <div className="mb-3">
           <label htmlFor="telefono" className="form-label">Teléfono</label>
-          <input type="tel" className="form-control" id="telefono" value={telefono} onChange={(e) => setTelefono(e.target.value)} required />
+          <input
+            type="tel"
+            className={`form-control ${erroresCampo.telefono ? 'is-invalid' : ''}`}
+            id="telefono"
+            value={telefono}
+            onChange={(e) => setTelefono(e.target.value)}
+          />
+          {erroresCampo.telefono && <div className="invalid-feedback">{erroresCampo.telefono}</div>}
         </div>
-        <button type="submit" className="btn btn-primary">Registrar Usuario</button>
+        <div className="form-check mt-3 mb-4 d-flex align-items-center gap-1">
+          <input
+            className="form-check-input m-0"
+            type="checkbox"
+            id="checkAcuerdo"
+            checked={aceptoTerminos}
+            onChange={(e) => setAceptoTerminos(e.target.checked)}
+          />
+              <label className="form-check-label m-0" htmlFor="checkAcuerdo">
+                Acepto los <button type="button" className="btn btn-link p-0" onClick={() => setShowAcuerdo(true)}>Términos de usuario</button> y la <button type="button" className="btn btn-link p-0" onClick={() => setShowPrivacidad(true)}>Política de Privacidad</button>
+              </label>
+      </div>
+
+        <button type="submit" className="btn btn-primary" disabled={Object.keys(erroresCampo).length > 0}>
+          Registrar Usuario
+        </button>
+
       </form>
-       <Alert type={alertCustom.type} message={alertCustom.message} onClose={handleCloseAlert} />
+       <Alert
+          type={alertCustom.type}
+          message={alertCustom.message}
+          onClose={() => handleCloseAlert(setAlertCustom)}
+        />
+
+        <Confirm
+          type={alertCustom.type}
+          message={alertCustom.message}
+          onConfirm={() => handleCloseAlert(setAlertCustom)}
+          onClose={() => handleCloseAlert(setAlertCustom)}
+        />
+
+       <ModalAcuerdo
+        show={showAcuerdo}
+        handleClose={() => setShowAcuerdo(false)}
+      />
+      <ModalPrivacidad
+        show={showPrivacidad}
+        handleClose={() => setShowPrivacidad(false)}
+      />
     </div>
   );
 };

@@ -19,13 +19,16 @@ export const Layout = ({ children, isLoggedIn }) => {
   }, [location]);
 
   const handleLogout = () => {
+    console.log("Cerrando sesión...");
     localStorage.removeItem("token");
     localStorage.removeItem("rol");
     setRolUsuario(null);
     navigate("/");
   };
   const handleNavLinkClick = () => {
-  setMenuOpen(false); // cerrar menú al dar clic
+    console.log("Cerrando menú...");
+  setMenuOpen(false); // cerrar menú al d
+  // car clic
     };
 
   return (
@@ -67,7 +70,16 @@ export const Layout = ({ children, isLoggedIn }) => {
                 <li className="nav-item"><Link className="nav-link" to="/about" onClick={handleNavLinkClick}>Acerca de nosotros</Link></li>
                 {rolUsuario && (
                 <li className="nav-item">
-                    <button className="btn btn-outline-light btn-sm" onClick={() => {handleNavLinkClick;handleLogout;}} >🔒 Cerrar sesión</button>
+                   <button
+                      className="btn btn-outline-light btn-sm"
+                      onClick={() => {
+                        handleNavLinkClick();
+                        handleLogout();
+                      }}
+                    >
+                      🔒 Cerrar sesión
+                    </button>
+
                 </li>
                 )}
             </ul>

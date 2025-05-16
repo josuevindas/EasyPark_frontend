@@ -70,7 +70,7 @@ export const Login = () => {
       }else if (localStorage.getItem('rol') === 'cliente') {
         navigate('/map');
 
-    }else if (localStorage.getItem('rol') === 'adminp' || localStorage.getItem('rol') === 'propietariop') {
+    }else if (localStorage.getItem('rol') === 'propietariop') {
         navigate('/Pendiente');
       
       }
