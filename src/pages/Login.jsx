@@ -61,19 +61,24 @@ export const Login = () => {
       
       localStorage.setItem('rol', usuario.tipo_usuarios);
       
-     setAlertCustom({ type: 'success', message: 'Inicio de sesión exitoso' });
+    
      
-      if (localStorage.getItem('rol')=== 'Admin') {
+     const rol = localStorage.getItem('rol');
+      if (rol === 'Admin' || rol === 'propietario' || rol === 'cliente') {
+        setAlertCustom({ type: 'success', message: 'Inicio de sesión exitoso' });
         navigate('/Bienvenida');
-      }else if (localStorage.getItem('rol') === 'propietario') {
-        navigate('/Bienvenida');
-      }else if (localStorage.getItem('rol') === 'cliente') {
-        navigate('/Bienvenida');
-
-    }else if (localStorage.getItem('rol') === 'propietariop') {
+      }else if (localStorage.getItem('rol') === 'propietariop') {
+         setAlertCustom({ type: 'success', message: 'Inicio de sesión exitoso' });
         navigate('/Pendiente');
       
+      }else if (localStorage.getItem('rol') === 'propietarioNo') {
+        setAlertCustom({
+        type: 'error',
+        message: 'Cuenta no autorizada'
+        });
       }
+
+
       
     } catch (error) {
       console.error('❌ Error al iniciar sesión:', error.message);

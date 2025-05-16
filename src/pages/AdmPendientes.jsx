@@ -105,7 +105,7 @@ export const AdmPendientes = () => {
           <tr>
             
             <th>Nombre</th>
-            <th>Tipo de Usuario</th>
+            <th>Pendiete</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -114,13 +114,13 @@ export const AdmPendientes = () => {
             <tr key={pendiente.idUsuario}>
               
               <td>{pendiente.nombre}</td>
-              <td>{pendiente.tipo_usuarios}</td>
+              <td>⏳ Pendiente</td>
               <td>
                 <button
                   className="btn btn-primary btn-sm me-2"
                   onClick={() => handleEditTipoUsuario(pendiente)}
                 >
-                  Editar Tipo
+                  Aceptar/Negar
                 </button>
               </td>
             </tr>
@@ -144,8 +144,8 @@ export const AdmPendientes = () => {
                 >
                   <option value="">Seleccionar tipo de usuario</option>
                   
-                  <option value="Admin">Administrador</option>
-                  <option value="propietario">propietario</option>
+                  <option value="propietario">Aceptar</option>
+                  <option value="propietarioNo">Negar</option>
                 </select>
 
           </div>
