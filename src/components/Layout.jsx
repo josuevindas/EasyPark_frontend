@@ -27,8 +27,7 @@ export const Layout = ({ children, isLoggedIn }) => {
   };
   const handleNavLinkClick = () => {
     console.log("Cerrando menú...");
-  setMenuOpen(false); // cerrar menú al d
-  // car clic
+    setMenuOpen(false);
     };
 
   return (
@@ -38,8 +37,8 @@ export const Layout = ({ children, isLoggedIn }) => {
             
             {menuOpen && <div className="menu-overlay" onClick={() => setMenuOpen(false)}></div>}
 
-            <nav className="navbar navbar-expand-lg navbar-dark bg-primary px-3">
-             <div className="container-fluid">
+            <nav className="navbar navbar-expand-lg navbar-dark bg-primary px-3 ">
+             <div className="container-fluid ">
             <Link to="/" className="navbar-brand d-flex align-items-center gap-2">
             <img src={logo} alt="EasyPark Logo" className="logo-img" />
             <span className="logo-text">EasyPark</span>
@@ -57,8 +56,8 @@ export const Layout = ({ children, isLoggedIn }) => {
             <ul className="navbar-nav ms-auto d-flex align-items-center gap-2">
                 {rolUsuario === "Admin" && (
                 <>
-                    <li className="nav-item"><Link className="nav-link" to="/Adm">Registrar Parqueos</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/AdmPendientes">Pendientes</Link></li>
+                    <li className="nav-item"><Link className="nav-link" to="/Adm" onClick={handleNavLinkClick}>Registrar Parqueos</Link></li>
+                    <li className="nav-item"><Link className="nav-link" to="/AdmPendientes" onClick={handleNavLinkClick}>Pendientes</Link></li>
                 </>
                 )}
                 {rolUsuario === "propietario" && (
