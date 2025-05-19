@@ -139,7 +139,7 @@ export const ParkAdm = () => {
   };
 
   return (
-    <div className="parking-bg container-fluid py-4">
+    
       <div className="content-box mx-auto p-4 shadow rounded bg-white bg-opacity-75">
         <h1 className="header-with-logo text-center mb-4 d-flex justify-content-center align-items-center gap-3">
           Parqueo/Garaje
@@ -267,8 +267,9 @@ export const ParkAdm = () => {
             <button className="btn btn-primary w-100" onClick={handleRegistrar}>Registrar</button>
           </div>
         </div>
+          <Alert type={alertCustom.type} message={alertCustom.message} onClose={handleCloseAlert} />
+    
       </div>
-      <Alert type={alertCustom.type} message={alertCustom.message} onClose={handleCloseAlert} />
-    </div>
+   
   );
 };

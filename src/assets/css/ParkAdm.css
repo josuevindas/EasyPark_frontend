@@ -41,14 +41,6 @@ input.form-control {
     text-overflow: ellipsis;
     
   }
-  
-.easypark-input {
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 0.5rem;
-    min-width: 160px;
-}
 
 .add-btn {
     background-color: #007bff;
@@ -63,22 +55,8 @@ input.form-control {
     background-color: #0056b3;
 }
 
-.easypark-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-}
 
-.easypark-table th,
-.easypark-table td {
-    border: 1px solid #ccc;
-    padding: 0.75rem;
-    text-align: center;
-}
 
-.easypark-table th {
-    background-color: #f2f2f2;
-}
 
 .delete-btn {
     background-color: #e53935;
@@ -96,9 +74,8 @@ input.form-control {
     background-color: #cce5ff;
     font-weight: bold;
 }
-.nombre-parqueo {
-    margin-bottom: 1rem;
-}
+
+
 .form-section {
     display: flex;
     flex-wrap: wrap;

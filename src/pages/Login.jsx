@@ -61,7 +61,7 @@ export const Login = () => {
       
       localStorage.setItem('rol', usuario.tipo_usuarios);
       localStorage.setItem('iduser', usuario.idUsuario);
-      
+      localStorage.setItem('nombre', usuario.nombre);
     
      
      const rol = localStorage.getItem('rol');

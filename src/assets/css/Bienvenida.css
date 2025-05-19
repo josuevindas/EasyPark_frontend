@@ -1,0 +1,54 @@
+/* Bienvenida.css */
+
+/* Aplica un fade-in que permanece */
+.fade-in {
+  animation: fadeIn 1s ease-in forwards;
+}
+
+/* Aplica un deslizamiento hacia abajo que permanece */
+.animate-slide {
+  animation: slideIn 0.8s ease-out forwards;
+}
+
+/* Animación de opacidad para fade-in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Animación de entrada deslizante desde arriba */
+@keyframes slideIn {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Opcional: estilos generales para presentación */
+.container {
+  max-width: 700px;
+  margin: auto;
+}
+
+img {
+  border-radius: 20px;
+}
+h1 {
+  font-size: 3rem; /* Título grande */
+}
+
+.lead {
+  font-size: 1.5rem; /* Texto principal más grande */
+}
+
+p {
+  font-size: 1.2rem;
+}
