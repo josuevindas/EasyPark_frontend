@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import '../assets/css/ParkAdm.css';
-import '../assets/css/Modal.css';
-import { Alert, Confirm } from "../components/ModalAlert";
+import "../assets/css/ParkAdm.css";
+import { Alert } from "../components/ModalAlert";
 import { useNavigate } from "react-router-dom";
 
 export const ParkAdm = () => {
@@ -23,6 +22,12 @@ export const ParkAdm = () => {
   const [alertCustom, setAlertCustom] = useState({ type: '', message: '' });
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("easypark_token");
+    if (!token) navigate("/");
+  }, []);
+
   const resetFormulario = () => {
     setTipoParqueo("");
     setNombreParqueo("");
@@ -36,13 +41,6 @@ export const ParkAdm = () => {
     setVehiculos([]);
     setFilaSeleccionada(null);
   };
-  
-  useEffect(() => {
-    const token = localStorage.getItem("easypark_token");
-    if (!token) {
-      navigate("/");
-    }
-  }, []);
 
   const agregarVehiculo = () => {
     if (nuevoVehiculo.trim() && !isNaN(nuevoPrecio) && nuevoPrecio.trim()) {
@@ -61,215 +59,199 @@ export const ParkAdm = () => {
     }
   };
 
- const handleRegistrar = async () => {
-  const token = localStorage.getItem("easypark_token");
-
-  if (!token) {
-    setAlertCustom({ type: 'error', message: 'No autorizado' });
-    return;
-  }
-
-  // Validaciones condicionales según visibilidad
-  const errores = [];
-
-  if (!tipoParqueo) errores.push('Tipo de parqueo es requerido.');
-  if (tipoParqueo !== "Garajes Privados" && !nombreParqueo.trim()) errores.push('Nombre del parqueo es requerido.');
-  if (!direccion.trim()) errores.push('Dirección es requerida.');
-  if (!longitud.trim()) errores.push('Longitud es requerida.');
-  if (!latitud.trim()) errores.push('Latitud es requerida.');
-  if (!horario.trim()) errores.push('Horario es requerido.');
-  if (!alturaEspacio.trim()) errores.push('Altura del espacio es requerida.');
-  if (!anchuraEspacio.trim()) errores.push('Anchura del espacio es requerida.');
-  if (!disponibilidad.trim()) errores.push('Cantidad de campos es requerida.');
-  if (vehiculos.length === 0) errores.push('Debe agregar al menos un vehículo.');
-
-  if (errores.length > 0) {
-    setAlertCustom({ type: 'error', message: errores.join(' ') });
-    return;
-  }
-   let  url = "";
- if (tipoParqueo === "Garajes Privados") {
-    console.log("Garajes Privados");
-      url = "http://localhost:3001/api/garajesprivados/guardar";
-    } else {
-      console.log("Estacionamientos");
-      url = "http://localhost:3001/api/estacionamientos/guardar";
+  const handleRegistrar = async () => {
+    const token = localStorage.getItem("easypark_token");
+    if (!token) {
+      setAlertCustom({ type: 'error', message: 'No autorizado' });
+      return;
     }
-  try {
-   
-    
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        nombre: nombreParqueo,
-        direccion,
-        longitud,
-        latitud,
-        horario,
-        altura: alturaEspacio,
-        anchura: anchuraEspacio,
-        disponibilidad,
-        fecha_registro: fechaRegistro,
-        vehiculos: vehiculos.map(v => ({ tipo_vehiculo: v.tipo, tarifa_hora: v.precio }))
-      })
-    });
 
-    const result = await response.json();
+    const errores = [];
+    if (!tipoParqueo) errores.push('Tipo de parqueo es requerido.');
+    if (tipoParqueo !== "Garajes Privados" && !nombreParqueo.trim()) errores.push('Nombre del parqueo es requerido.');
+    if (!direccion.trim()) errores.push('Dirección es requerida.');
+    if (!longitud.trim()) errores.push('Longitud es requerida.');
+    if (!latitud.trim()) errores.push('Latitud es requerida.');
+    if (!horario.trim()) errores.push('Horario es requerido.');
+    if (!alturaEspacio.trim()) errores.push('Altura del espacio es requerida.');
+    if (!anchuraEspacio.trim()) errores.push('Anchura del espacio es requerida.');
+    if (!disponibilidad.trim()) errores.push('Cantidad de campos es requerida.');
+    if (vehiculos.length === 0) errores.push('Debe agregar al menos un vehículo.');
 
-    if (response.ok) {
-      setAlertCustom({ type: 'success', message: 'Parqueo registrado con éxito' });
-      resetFormulario();
-    } else {
-      setAlertCustom({ type: 'error', message: result.error || 'No se pudo registrar' });
+    if (errores.length > 0) {
+      setAlertCustom({ type: 'error', message: errores.join(' ') });
+      return;
     }
-  } catch (error) {
-    console.error("❌ Error al registrar:", error);
-    setAlertCustom({ type: 'error', message: 'Error de red' });
-  }
-};
 
-  
+    try {
+      let url = "";
+      let body = {};
+
+      if (tipoParqueo === "Garajes Privados") {
+        url = "http://localhost:3001/api/garajesprivados/guardar";
+        body = JSON.stringify({
+          direccion,
+          latitud,
+          longitud,
+          horario,
+          estado: "ocupado",
+          disponibilidad,
+          anchura: anchuraEspacio,
+          altura: alturaEspacio,
+          fecha_inscripcion: fechaRegistro,
+          vehiculos: vehiculos.map(v => ({
+            tipo_vehiculo: v.tipo,
+            tarifa_hora: v.precio
+          }))
+        });
+      } else {
+        url = "http://localhost:3001/api/estacionamientos/guardar";
+        body = JSON.stringify({
+          nombre: nombreParqueo,
+          direccion,
+          longitud,
+          latitud,
+          horario,
+          altura: alturaEspacio,
+          anchura: anchuraEspacio,
+          disponibilidad,
+          fecha_registro: fechaRegistro,
+          vehiculos: vehiculos.map(v => ({
+            tipo_vehiculo: v.tipo,
+            tarifa_hora: v.precio
+          }))
+        });
+      }
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setAlertCustom({ type: 'success', message: 'Parqueo registrado con éxito' });
+        resetFormulario();
+      } else {
+        setAlertCustom({ type: 'error', message: result.error || 'No se pudo registrar' });
+      }
+    } catch (error) {
+      console.error("❌ Error al registrar:", error);
+      setAlertCustom({ type: 'error', message: 'Error de red' });
+    }
+  };
 
   const handleCloseAlert = () => {
     setAlertCustom({ type: '', message: '' });
   };
 
   return (
-    
+    <div className="container-fluid px-3 py-4">
       <div className="content-box mx-auto p-4 shadow rounded bg-white bg-opacity-75">
-        <h1 className="header-with-logo text-center mb-4 d-flex justify-content-center align-items-center gap-3">
-          Parqueo/Garaje
-        </h1>
-          
-          <div className="row g-2 mb-3 justify-content-center">
-             <div className="col-md-4">
-                <select
-                    className="form-select"
-                    value={tipoParqueo}
-                    onChange={(e) => setTipoParqueo(e.target.value)}
-                    aria-label="Default select example"
-               >
-                    <option value="">Selecciona tipo de parqueo</option>
-                    <option value="Estacionamientos">Estacionamientos</option>
-                    <option value="Garajes Privados">Garajes Privados</option>
-                </select>
-            </div>
+        <h1 className="text-center mb-4">Parqueo/Garaje</h1>
+
+        <div className="mb-3">
+          <label className="form-label">Tipo de parqueo</label>
+          <select className="form-select" value={tipoParqueo} onChange={(e) => setTipoParqueo(e.target.value)}>
+            <option value="">Selecciona tipo de parqueo</option>
+            <option value="Estacionamientos">Estacionamientos</option>
+            <option value="Garajes Privados">Garajes Privados</option>
+          </select>
         </div>
 
-         
-        <div className="row g-2 mb-3 justify-content-center">
-          {tipoParqueo !== "Garajes Privados" && (
-           <div className="row g-2 mb-3 justify-content-center">
-              <div className="col-md-5">
-                <input type="text" placeholder="Nombre del parqueo/garaje" className="form-control"
-                  value={nombreParqueo} onChange={(e) => setNombreParqueo(e.target.value)} />
-              </div>
-            </div>
-          )}
-            <div className="row g-2 mb-3 justify-content-center">
-          <div className="col-md-5">
-            <input type="text" placeholder="Dirección del parqueo/garaje" className="form-control"
-              value={direccion} onChange={(e) => setDireccion(e.target.value)} />
+        {tipoParqueo !== "Garajes Privados" && (
+          <div className="mb-3">
+            <label className="form-label">Nombre del parqueo/garaje</label>
+            <input type="text" className="form-control" value={nombreParqueo} onChange={(e) => setNombreParqueo(e.target.value)} />
+          </div>
+        )}
+
+        <div className="mb-3">
+          <label className="form-label">Dirección</label>
+          <input type="text" className="form-control" value={direccion} onChange={(e) => setDireccion(e.target.value)} />
+        </div>
+
+        <div className="row">
+          <div className="col-md-6 mb-3">
+            <label className="form-label">Longitud</label>
+            <input type="text" className="form-control" value={longitud} onChange={(e) => setLongitud(e.target.value)} />
+          </div>
+          <div className="col-md-6 mb-3">
+            <label className="form-label">Latitud</label>
+            <input type="text" className="form-control" value={latitud} onChange={(e) => setLatitud(e.target.value)} />
           </div>
         </div>
-            <div className="col-md-2">
-              <input type="text" placeholder="Longitud" className="form-control"
-                value={longitud} onChange={(e) => setLongitud(e.target.value)} />
-            </div>
-            <div className="col-md-2">
-              <input type="text" placeholder="Latitud" className="form-control"
-                value={latitud} onChange={(e) => setLatitud(e.target.value)} />
-            </div>
-          </div>
-          <div className="row g-2 mb-3 justify-content-center">
-              <div className="col-md-4">
-                <input type="number" placeholder="Altura del campo (m)" className="form-control"
-                  value={alturaEspacio} onChange={(e) => setAlturaEspacio(e.target.value)} />
-              </div>
-              <div className="col-md-4">
-                <input type="number" placeholder="Anchura del campo(m)" className="form-control"
-                  value={anchuraEspacio} onChange={(e) => setAnchuraEspacio(e.target.value)} />
-              </div>
-            </div>
 
-      
-            
-              <div className="row g-2 mb-3 justify-content-center">
-                <div className="col-md-4">
-                  <input type="number" placeholder="Cantidad de campos" className="form-control"
-                    value={disponibilidad} onChange={(e) => setCantidadCampos(e.target.value)} />
-                </div>
-              </div>
-          
-            <div className="row g-2 mb-3 justify-content-center">
-              <div className="col-md-2">
-                <input type="text" placeholder="Horario" className="form-control"
-                  value={horario} onChange={(e) => setHorario(e.target.value)} onFocus={(e) => e.target.select()}/>
-              </div>
-            </div>
-
-      
-         
-      
-          <div className="row g-2 mb-3 justify-content-center">
-            <div className="col-md-3">
-              <input type="text" placeholder="Tipo de vehículo" className="form-control"
-                value={nuevoVehiculo}
-                onChange={(e) => setNuevoVehiculo(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && agregarVehiculo()}
-              />
-            </div>
-            <div className="col-md-2">
-              <input type="text" placeholder="Precio" className="form-control"
-                value={nuevoPrecio}
-                onChange={(e) => setNuevoPrecio(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && agregarVehiculo()}
-              />
-            </div>
-            <div className="col-auto d-flex gap-2 align-items-center">
-              <button className="btn btn-primary" onClick={agregarVehiculo}>+</button>
-              <button className="btn btn-danger" onClick={eliminarVehiculo}>-</button>
-            </div>
+        <div className="row">
+          <div className="col-md-6 mb-3">
+            <label className="form-label">Altura del campo (m)</label>
+            <input type="number" className="form-control" value={alturaEspacio} onChange={(e) => setAlturaEspacio(e.target.value)} />
           </div>
-      
-          <div className="table-responsive">
-            <table className="table table-bordered text-center">
-              <thead className="table-light">
-                <tr>
-                  <th>Vehículo</th>
-                  <th>Precio</th>
-                </tr>
-              </thead>
-              <tbody>
-                {vehiculos.length === 0 ? (
-                  <tr><td colSpan="2">No hay vehículos registrados</td></tr>
-                ) : (
-                  vehiculos.map((v, i) => (
-                    <tr
-                      key={i}
-                      className={filaSeleccionada === i ? "table-primary fw-bold" : ""}
-                      onClick={() => setFilaSeleccionada(i)}
-                    >
-                      <td>{v.tipo}</td>
-                      <td>{v.precio}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-          <div className="row mt-4 justify-content-center">
-          <div className="col-md-4 text-center">
-            <button className="btn btn-primary w-100" onClick={handleRegistrar}>Registrar</button>
+          <div className="col-md-6 mb-3">
+            <label className="form-label">Anchura del campo (m)</label>
+            <input type="number" className="form-control" value={anchuraEspacio} onChange={(e) => setAnchuraEspacio(e.target.value)} />
           </div>
         </div>
-          <Alert type={alertCustom.type} message={alertCustom.message} onClose={handleCloseAlert} />
-    
+
+        <div className="mb-3">
+          <label className="form-label">Cantidad de campos</label>
+          <input type="number" className="form-control" value={disponibilidad} onChange={(e) => setCantidadCampos(e.target.value)} />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Horario</label>
+          <input type="text" className="form-control" value={horario} onChange={(e) => setHorario(e.target.value)} />
+        </div>
+
+        <div className="row align-items-end">
+          <div className="col-md-6 mb-3">
+            <label className="form-label">Tipo de vehículo</label>
+            <input type="text" className="form-control" value={nuevoVehiculo} onChange={(e) => setNuevoVehiculo(e.target.value)} onKeyDown={(e) => e.key === "Enter" && agregarVehiculo()} />
+          </div>
+          <div className="col-md-4 mb-3">
+            <label className="form-label">Precio por hora</label>
+            <input type="text" className="form-control" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} onKeyDown={(e) => e.key === "Enter" && agregarVehiculo()} />
+          </div>
+          <div className="col-md-2 mb-3 d-flex gap-2">
+            <button className="btn btn-primary btn-vehiculo" onClick={agregarVehiculo}>+</button>
+            <button className="btn btn-danger btn-vehiculo" onClick={eliminarVehiculo}>-</button>
+          </div>
+        </div>
+
+        <div className="table-responsive mb-3">
+          <table className="table table-bordered text-center">
+            <thead className="table-light">
+              <tr>
+                <th>Vehículo</th>
+                <th>Precio</th>
+              </tr>
+            </thead>
+            <tbody>
+              {vehiculos.length === 0 ? (
+                <tr><td colSpan="2">No hay vehículos registrados</td></tr>
+              ) : (
+                vehiculos.map((v, i) => (
+                  <tr key={i} className={filaSeleccionada === i ? "selected-row" : ""} onClick={() => setFilaSeleccionada(i)}>
+                    <td>{v.tipo}</td>
+                    <td>{v.precio}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="text-center">
+          <button className="btn btn-success w-100" onClick={handleRegistrar}>Registrar</button>
+        </div>
+
+        <Alert type={alertCustom.type} message={alertCustom.message} onClose={handleCloseAlert} />
       </div>
-   
+    </div>
   );
 };

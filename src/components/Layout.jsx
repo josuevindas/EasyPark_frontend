@@ -2,6 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/img/logo-easyPark.jpeg";
 import "../assets/css/Layout.css";
 import { useState, useEffect } from "react";
+import { FaUserCircle } from "react-icons/fa";
+
 import { useLocation } from "react-router-dom";
 import { handleLogout, handleNavLinkClick, toggleMenu } from "../handlers/LayoutHandlers";
 import { Alert, Confirm } from "../components/ModalAlert";
@@ -63,7 +65,11 @@ export const Layout = ({ children, isLoggedIn }) => {
                 </>
                 )}
                 {rolUsuario === "propietario" && (
+                  <>
                 <li className="nav-item"><Link className="nav-link" to="/Adm" onClick={() => handleNavLinkClick(setMenuOpen)}>Registrar Parqueos</Link></li>
+               <li className="nav-item"><Link className="nav-link" to="/MisPropiedades" onClick={() => handleNavLinkClick(setMenuOpen)}>Editar Propiedades</Link></li>
+               
+                </>
                 )}
                 {rolUsuario === null && (
                   <>
@@ -73,6 +79,13 @@ export const Layout = ({ children, isLoggedIn }) => {
                 )}
                 <li className="nav-item"><Link className="nav-link" to="/about" onClick={() => handleNavLinkClick(setMenuOpen)}>Acerca de nosotros</Link></li>
                 {rolUsuario && (
+                  <> 
+                  <li className="nav-item">
+                      <Link className="nav-link d-flex align-items-center gap-1" to="/EditarPerfil" onClick={() => handleNavLinkClick(setMenuOpen)}>
+                        <FaUserCircle size={18} />
+                        Editar perfil
+                      </Link>
+                    </li>
                 <li className="nav-item">
                    <button
                       className="btn btn-outline-light btn-sm"
@@ -85,6 +98,7 @@ export const Layout = ({ children, isLoggedIn }) => {
                     </button>
 
                 </li>
+              </>
                 )}
             </ul>
             </div>

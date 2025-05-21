@@ -14,6 +14,8 @@ import { AdmPendientes } from './pages/AdmPendientes.jsx'
 import {About} from './pages/Nosotros.jsx'
 import {Home} from './pages/Home.jsx'
 import {Bienvenida} from "./pages/Bienvenida";
+import { MisPropiedades } from './pages/MisPropiedades.jsx'
+import { EditarPropiedad } from './pages/EditarPropiedad.jsx';
 
 
 
@@ -30,6 +32,8 @@ function App() {
           <Route path="/Bienvenida" element={<Bienvenida />} />
           <Route path="/About" element={<About />} />
           <Route path="/AdmPendientes" element={<AdmPendientes />} />
+          <Route path="/MisPropiedades" element={<MisPropiedades />} />
+          <Route path="/editarpropiedad/:id/:tipo" element={<EditarPropiedad />} />
           <Route path="/Pendiente" element={<Pendiente />} />
            <Route path="/Registrar" element={<Registrar />} />
           <Route path="/Adm" element={<ParkAdm />} />
