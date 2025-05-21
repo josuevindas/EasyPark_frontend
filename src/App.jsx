@@ -16,7 +16,7 @@ import {Home} from './pages/Home.jsx'
 import {Bienvenida} from "./pages/Bienvenida";
 import { MisPropiedades } from './pages/MisPropiedades.jsx'
 import { EditarPropiedad } from './pages/EditarPropiedad.jsx';
-
+import { EditarUsuario } from './pages/EditarUsuario.jsx'
 
 
 
@@ -31,9 +31,10 @@ function App() {
           <Route path="/Login" element={<Login />} />
           <Route path="/Bienvenida" element={<Bienvenida />} />
           <Route path="/About" element={<About />} />
+          <Route path="/EditarUsuario" element={<EditarUsuario />} />
           <Route path="/AdmPendientes" element={<AdmPendientes />} />
           <Route path="/MisPropiedades" element={<MisPropiedades />} />
-          <Route path="/editarpropiedad/:id/:tipo" element={<EditarPropiedad />} />
+          <Route path="/EditarPropiedad/:id/:" element={<EditarPropiedad />} />
           <Route path="/Pendiente" element={<Pendiente />} />
            <Route path="/Registrar" element={<Registrar />} />
           <Route path="/Adm" element={<ParkAdm />} />

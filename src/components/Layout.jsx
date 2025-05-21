@@ -81,7 +81,7 @@ export const Layout = ({ children, isLoggedIn }) => {
                 {rolUsuario && (
                   <> 
                   <li className="nav-item">
-                      <Link className="nav-link d-flex align-items-center gap-1" to="/EditarPerfil" onClick={() => handleNavLinkClick(setMenuOpen)}>
+                      <Link className="nav-link d-flex align-items-center gap-1" to="/EditarUsuario" onClick={() => handleNavLinkClick(setMenuOpen)}>
                         <FaUserCircle size={18} />
                         Editar perfil
                       </Link>

@@ -22,7 +22,7 @@ export const MisPropiedades = () => {
   }, []);
 
   const handleEditar = (propiedad) => {
-    navigate(`/editarpropiedad/${propiedad.id}/${propiedad.tipo}`);
+    navigate(`/EditarPropiedad/${propiedad.id}/${propiedad.tipo}`);
   };
 
   return (

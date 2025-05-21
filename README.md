@@ -13,4 +13,5 @@ If you are developing a production application, we recommend using TypeScript an
 
 
 npm install react-icons
+npm install lucide-react
 
