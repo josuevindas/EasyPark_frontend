@@ -11,6 +11,8 @@ import { ModalAcuerdo } from "../components/ModalAcuerdo";
 import { ModalPrivacidad } from "../components/ModalPrivacidad";
 import { useValidaciones } from "../components/useValidaciones";
 import { handleRegistrar, handleCloseAlert } from '../handlers/registrarHandlers';
+import { Eye, EyeOff } from 'lucide-react'; // 👈 Agregado
+
 
 
 const app = initializeApp(firebaseConfig);
@@ -28,6 +30,7 @@ const [showAcuerdo, setShowAcuerdo] = useState(false);
 const [showPrivacidad, setShowPrivacidad] = useState(false);
 const[aceptoTerminos, setAceptoTerminos] = useState(false);
 const erroresCampo = useValidaciones({ email, password, telefono });
+const [mostrar, setMostrar] = useState(false); // 👈 Nuevo estado
 
 
   const navigate = useNavigate();
@@ -96,15 +99,26 @@ const erroresCampo = useValidaciones({ email, password, telefono });
         </div>
         <div className="mb-3">
           <label htmlFor="password" className="form-label">Contraseña</label>
-          <input
-            type="password"
-            className={`form-control ${erroresCampo.password ? 'is-invalid' : ''}`}
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="input-group">
+            <input
+              type={mostrar ? "text" : "password"}
+              className={`form-control ${erroresCampo.password ? 'is-invalid' : ''}`}
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              className="btn btn-outline-secondary"
+              onClick={() => setMostrar(!mostrar)}
+              tabIndex={-1} // para que no interrumpa el tab de formulario
+            >
+              {mostrar ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
           {erroresCampo.password && <div className="invalid-feedback">{erroresCampo.password}</div>}
         </div>
+
         <div className="mb-3">
           <label htmlFor="tipoUsuarios" className="form-label">Tipo de Usuario</label>
           <select className="form-select" id="tipoUsuarios" value={tipoUsuarios} onChange={(e) => setTipoUsuarios(e.target.value)} required>
