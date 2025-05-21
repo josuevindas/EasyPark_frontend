@@ -34,7 +34,7 @@ function App() {
           <Route path="/EditarUsuario" element={<EditarUsuario />} />
           <Route path="/AdmPendientes" element={<AdmPendientes />} />
           <Route path="/MisPropiedades" element={<MisPropiedades />} />
-          <Route path="/EditarPropiedad/:id/:" element={<EditarPropiedad />} />
+          <Route path="/EditarPropiedad/:id/:tipo" element={<EditarPropiedad />} />
           <Route path="/Pendiente" element={<Pendiente />} />
            <Route path="/Registrar" element={<Registrar />} />
           <Route path="/Adm" element={<ParkAdm />} />

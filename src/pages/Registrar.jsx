@@ -107,7 +107,7 @@ const [mostrar, setMostrar] = useState(false); // 👈 Nuevo estado
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <button
+            <button 
               type="button"
               className="btn btn-outline-secondary"
               onClick={() => setMostrar(!mostrar)}
