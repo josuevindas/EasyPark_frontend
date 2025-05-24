@@ -88,7 +88,7 @@ export const ParkAdm = () => {
       let body = {};
 
       if (tipoParqueo === "Garajes Privados") {
-        url = "http://localhost:3001/api/garajesprivados/guardar";
+        url = "http://localhost:3001/api/garajes/guardar";
         body = JSON.stringify({
           direccion,
           latitud,
@@ -151,8 +151,8 @@ export const ParkAdm = () => {
   };
 
   return (
-    <div className="container-fluid px-3 py-4">
-      <div className="content-box mx-auto p-4 shadow rounded bg-white bg-opacity-75">
+    <div className="">
+      <div className="">
         <h1 className="text-center mb-4">Parqueo/Garaje</h1>
 
         <div className="mb-3">
@@ -223,7 +223,8 @@ export const ParkAdm = () => {
           </div>
         </div>
 
-        <div className="table-responsive mb-3">
+        {/* TABLA EN PANTALLAS GRANDES */}
+        <div className="d-none d-md-block table-responsive mb-3">
           <table className="table table-bordered text-center">
             <thead className="table-light">
               <tr>
@@ -244,6 +245,27 @@ export const ParkAdm = () => {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* TARJETAS EN CELULAR */}
+        <div className="d-block d-md-none mb-3">
+          {vehiculos.length === 0 ? (
+            <p className="text-center">No hay vehículos registrados</p>
+          ) : (
+            vehiculos.map((v, i) => (
+              <div
+                key={i}
+                className={`card mb-2 shadow-sm ${filaSeleccionada === i ? "border-primary" : ""}`}
+                onClick={() => setFilaSeleccionada(i)}
+                style={{ cursor: "pointer" }}
+              >
+                <div className="card-body">
+                  <h6 className="card-title mb-1">Vehículo: {v.tipo}</h6>
+                  <p className="card-text mb-0"><strong>Precio por hora:</strong> ₡{v.precio}</p>
+                </div>
+              </div>
+            ))
+          )}
         </div>
 
         <div className="text-center">

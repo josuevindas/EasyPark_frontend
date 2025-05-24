@@ -17,6 +17,8 @@ import {Bienvenida} from "./pages/Bienvenida";
 import { MisPropiedades } from './pages/MisPropiedades.jsx'
 import { EditarPropiedad } from './pages/EditarPropiedad.jsx';
 import { EditarUsuario } from './pages/EditarUsuario.jsx'
+import { AdministrarPropiedad } from './pages/AdmPropiedad.jsx'   
+
 
 
 
@@ -35,6 +37,7 @@ function App() {
           <Route path="/AdmPendientes" element={<AdmPendientes />} />
           <Route path="/MisPropiedades" element={<MisPropiedades />} />
           <Route path="/EditarPropiedad/:id/:tipo" element={<EditarPropiedad />} />
+           <Route path="/AdministrarPropiedad/:id/:tipo" element={<AdministrarPropiedad />} />
           <Route path="/Pendiente" element={<Pendiente />} />
            <Route path="/Registrar" element={<Registrar />} />
           <Route path="/Adm" element={<ParkAdm />} />
