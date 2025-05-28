@@ -18,7 +18,7 @@ export const AdministrarPropiedad = () => {
   useEffect(() => {
     const token = localStorage.getItem("easypark_token");
 
-    fetch(`http://localhost:3001/api/${tipo === 'Garaje' ? 'garajes' : 'estacionamientos'}/${id}`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/${tipo === 'Garaje' ? 'garajes' : 'estacionamientos'}/${id}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -68,7 +68,7 @@ export const AdministrarPropiedad = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/propiedades/campos/${tipo}/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/propiedades/campos/${tipo}/${id}`,
         {
           method: 'PUT',
           headers: {

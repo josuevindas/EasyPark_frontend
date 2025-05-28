@@ -9,6 +9,8 @@ export const MapPage = () => {
   const [locationInfo, setLocationInfo] = useState('');
   const [nearbyParkings, setNearbyParkings] = useState([]);
   const [showSearchModal, setShowSearchModal] = useState(false);
+  const [selectedParking, setSelectedParking] = useState(null);
+
   const [formData, setFormData] = useState({
     origin: '',
     destination: ''
@@ -21,7 +23,7 @@ export const MapPage = () => {
   useEffect(() => {
     if (!navigator.geolocation) {
       setError("Tu navegador no soporta geolocalización");
-      setUserLocation({ lat: -29.379, lng: -136.604 });
+      setUserLocation({ lat: 10.003649986156336 , lng: -84.14259788597299 });
       return;
     }
 
@@ -36,7 +38,7 @@ export const MapPage = () => {
       (err) => {
         console.error("Error de geolocalización:", err);
         setError("No se pudo obtener tu ubicación");
-        setUserLocation({ lat: -29.379, lng: -136.604 });
+        setUserLocation({ lat: 10.003649986156336 , lng: -84.14259788597299 });
       },
       { enableHighAccuracy: true, timeout: 5000 }
     );
@@ -45,6 +47,7 @@ export const MapPage = () => {
   useEffect(() => {
     if (userLocation) {
       getLocationInfo(userLocation);
+      console.log("📍 Mi ubicación actual es:", userLocation);
     }
   }, [userLocation]);
 
@@ -96,11 +99,13 @@ export const MapPage = () => {
   useEffect(() => {
     if (!userLocation || !mapRef.current) return;
 
-    const initMap = () => {
+    const initMap = async () => {
       try {
         if (!window.google || !window.google.maps) {
           throw new Error("Google Maps API no está disponible");
         }
+
+        await window.google.maps.importLibrary("marker");
 
         mapInstance.current = new window.google.maps.Map(mapRef.current, {
           center: userLocation,
@@ -109,21 +114,22 @@ export const MapPage = () => {
           gestureHandling: "greedy"
         });
 
-        new window.google.maps.Marker({
-          position: userLocation,
+        const { AdvancedMarkerElement } = window.google.maps.marker;
+        const userIcon = document.createElement('div');
+        userIcon.style.width = '12px';
+        userIcon.style.height = '12px';
+        userIcon.style.borderRadius = '50%';
+        userIcon.style.backgroundColor = '#4285F4';
+        userIcon.style.border = '2px solid white';
+
+        new AdvancedMarkerElement({
           map: mapInstance.current,
-          icon: {
-            path: window.google.maps.SymbolPath.CIRCLE,
-            scale: 8,
-            fillColor: "#4285F4",
-            fillOpacity: 1,
-            strokeWeight: 2,
-            strokeColor: "white"
-          }
+          position: userLocation,
+          title: "Tu ubicación",
+          content: userIcon
         });
 
         setLoading(false);
-
         findNearbyParkings();
 
       } catch (err) {
@@ -137,14 +143,13 @@ export const MapPage = () => {
       initMap();
     } else {
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD7hTh2iDt3rt_aHNRp9E-GhJC8JOQKXIc&libraries=places&callback=initMap`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD7hTh2iDt3rt_aHNRp9E-GhJC8JOQKXIc&libraries=places&callback=initMap&loading=async`;
       script.async = true;
       script.defer = true;
       script.onerror = () => {
         setError("Error al cargar Google Maps");
         setLoading(false);
       };
-
       window.initMap = initMap;
       document.head.appendChild(script);
     }
@@ -185,55 +190,65 @@ export const MapPage = () => {
     });
   };
 
-  const findNearbyParkings = () => {
-    if (!userLocation || !window.google || !window.google.maps || !mapInstance.current) return;
+  const findNearbyParkings = async () => {
+    if (!userLocation) return;
 
-    const service = new window.google.maps.places.PlacesService(mapInstance.current);
-    const request = {
-      location: new window.google.maps.LatLng(userLocation.lat, userLocation.lng),
-      radius: 10000,
-      type: 'parking',
-      keyword: 'parqueo'
-    };
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/propiedades/cercanas`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('easypark_token')}`
+        }
+      });
 
-    service.nearbySearch(request, (results, status) => {
-      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        const parkingsWithDistance = results.map(place => {
+      const data = await response.json();
+      const { AdvancedMarkerElement } = window.google.maps.marker;
+
+      const cercanos = data
+        .map(parking => {
           const distance = calculateDistance(
             userLocation.lat,
             userLocation.lng,
-            place.geometry.location.lat(),
-            place.geometry.location.lng()
+            parking.latitud,
+            parking.longitud
           );
 
-          new window.google.maps.Marker({
-            position: place.geometry.location,
-            map: mapInstance.current,
-            title: place.name,
-            icon: {
-              path: "M 0 -10 L 10 10 L -10 10 Z",
-              fillColor: "#4285F4",
-              fillOpacity: 1,
-              strokeWeight: 1,
-              strokeColor: "#2a65c4",
-              scale: 1
-            }
-          });
+          if (distance <= 10) {
+            const iconUrl = parking.tipo === 'Garaje'
+              ? '/icons/garage.png'
+              : '/icons/parking.png';
 
-          return {
-            id: place.place_id,
-            name: place.name,
-            distance,
-            location: {
-              lat: place.geometry.location.lat(),
-              lng: place.geometry.location.lng()
-            }
-          };
-        });
+            const img = document.createElement('img');
+            img.src = iconUrl;
+            img.style.width = '30px';
+            img.style.height = '30px';
 
-        setNearbyParkings(parkingsWithDistance);
-      }
-    });
+            new AdvancedMarkerElement({
+              map: mapInstance.current,
+              position: { lat: parking.latitud, lng: parking.longitud },
+              title: parking.nombre,
+              content: img
+            });
+
+            return {
+              id: parking.id,
+              name: parking.nombre,
+              tipo: parking.tipo,
+              distance,
+              location: {
+                lat: parking.latitud,
+                lng: parking.longitud
+              }
+            };
+          }
+          return null;
+        })
+        .filter(p => p !== null);
+
+      setNearbyParkings(cercanos);
+    } catch (err) {
+      console.error("Error al buscar parqueos:", err);
+      setError("No se pudieron cargar parqueos cercanos");
+    }
   };
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
@@ -281,6 +296,27 @@ export const MapPage = () => {
 
     mapInstance.current.setCenter(destination);
     mapInstance.current.setZoom(15);
+  };
+
+  
+  const focusIfTooFar = () => {
+    if (!mapInstance.current || !userLocation) return;
+
+    const center = mapInstance.current.getCenter();
+    const centerLat = center.lat();
+    const centerLng = center.lng();
+
+    const distance = calculateDistance(
+      centerLat,
+      centerLng,
+      userLocation.lat,
+      userLocation.lng
+    );
+
+    if (distance > 1) {
+      mapInstance.current.setCenter(userLocation);
+      mapInstance.current.setZoom(16);
+    }
   };
 
   return (
@@ -360,7 +396,31 @@ export const MapPage = () => {
         </div>
       </div>
 
+      {/* Botón: Ir a mi ubicación */}
+      <button
+        className="btn btn-primary my-location-button"
+        onClick={() => {
+          if (mapInstance.current && userLocation) {
+            mapInstance.current.setCenter(userLocation);
+            mapInstance.current.setZoom(16);
+          }
+        }}
+        title="Ir a mi ubicación"
+      >
+        📍
+      </button>
+
+      {/* 🔘 NUEVO Botón: Centrar si estoy lejos */}
+      <button
+        className="btn btn-outline-secondary adjust-location-button"
+        onClick={focusIfTooFar}
+        title="Centrar si estoy lejos"
+      >
+        📡 Centrar si estoy lejos
+      </button>
+
       <div ref={mapRef} className="map-fullscreen"></div>
     </div>
   );
 };
+

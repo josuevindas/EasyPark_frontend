@@ -14,7 +14,7 @@ export const MisPropiedades = () => {
     const id = localStorage.getItem("iduser");
     if (!token) return navigate("/");
 
-    fetch(`http://localhost:3001/api/propiedades/mis/${id}`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/propiedades/mis/${id}`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -33,7 +33,7 @@ export const MisPropiedades = () => {
 
   const handleEliminar = () => {
     const { propiedad } = confirmData;
-    fetch(`http://localhost:3001/api/propiedades/eliminar/${propiedad.tipo}/${propiedad.id}`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/propiedades/eliminar/${propiedad.tipo}/${propiedad.id}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${localStorage.getItem("easypark_token")}`,

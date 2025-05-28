@@ -88,7 +88,7 @@ export const ParkAdm = () => {
       let body = {};
 
       if (tipoParqueo === "Garajes Privados") {
-        url = "http://localhost:3001/api/garajes/guardar";
+        url = `${import.meta.env.VITE_API_URL}/api/garajes/guardar`;
         body = JSON.stringify({
           direccion,
           latitud,
@@ -105,7 +105,7 @@ export const ParkAdm = () => {
           }))
         });
       } else {
-        url = "http://localhost:3001/api/estacionamientos/guardar";
+        url = `${import.meta.env.VITE_API_URL}/api/estacionamientos/guardar`;
         body = JSON.stringify({
           nombre: nombreParqueo,
           direccion,
@@ -137,6 +137,7 @@ export const ParkAdm = () => {
       if (response.ok) {
         setAlertCustom({ type: 'success', message: 'Parqueo registrado con éxito' });
         resetFormulario();
+        navigate("/Bienvenida");
       } else {
         setAlertCustom({ type: 'error', message: result.error || 'No se pudo registrar' });
       }

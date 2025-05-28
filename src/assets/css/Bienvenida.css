@@ -32,23 +32,3 @@
   }
 }
 
-/* Opcional: estilos generales para presentación */
-.container {
-  max-width: 700px;
-  margin: auto;
-}
-
-img {
-  border-radius: 20px;
-}
-h1 {
-  font-size: 3rem; /* Título grande */
-}
-
-.lead {
-  font-size: 1.5rem; /* Texto principal más grande */
-}
-
-p {
-  font-size: 1.2rem;
-}

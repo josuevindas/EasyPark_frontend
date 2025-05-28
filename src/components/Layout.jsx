@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/img/logo-easyPark.jpeg";
 import "../assets/css/Layout.css";
 import { useState, useEffect } from "react";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaSignInAlt, FaUserPlus } from "react-icons/fa";
 
 import { useLocation } from "react-router-dom";
 import { handleLogout, handleNavLinkClick, toggleMenu } from "../handlers/LayoutHandlers";
@@ -71,13 +71,29 @@ export const Layout = ({ children, isLoggedIn }) => {
                
                 </>
                 )}
-                {rolUsuario === null && (
+                {rolUsuario === "cliente" && (
                   <>
-                    <li className="nav-item"><Link className="nav-link" to="/Login" onClick={() => handleNavLinkClick(setMenuOpen)}>Iniciar sesión</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/Registrar" onClick={() => handleNavLinkClick(setMenuOpen)}>Crear cuenta</Link></li>
+                <li className="nav-item"><Link className="nav-link" to="/map" onClick={() => handleNavLinkClick(setMenuOpen)}>Reservar</Link></li>
+               
                 </>
                 )}
-                <li className="nav-item"><Link className="nav-link" to="/about" onClick={() => handleNavLinkClick(setMenuOpen)}>Acerca de nosotros</Link></li>
+                {rolUsuario === null && (
+                  <>
+                    <li className="nav-item">
+                      <Link className="nav-link d-flex align-items-center gap-1" to="/Login" onClick={() => handleNavLinkClick(setMenuOpen)} title="Iniciar sesión">
+                        <FaSignInAlt />
+                        <span className="d-none d-lg-inline">Iniciar sesión</span>
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link d-flex align-items-center gap-1" to="/Registrar" onClick={() => handleNavLinkClick(setMenuOpen)} title="Crear cuenta">
+                        <FaUserPlus />
+                        <span className="d-none d-lg-inline">Crear cuenta</span>
+                      </Link>
+                    </li>
+                  </>
+                )}
+
                 {rolUsuario && (
                   <> 
                   <li className="nav-item">
@@ -100,6 +116,8 @@ export const Layout = ({ children, isLoggedIn }) => {
                 </li>
               </>
                 )}
+                <li className="nav-item"><Link className="nav-link" to="/about" onClick={() => handleNavLinkClick(setMenuOpen)}>Acerca de nosotros</Link></li>
+                
             </ul>
             </div>
         </div>

@@ -22,7 +22,7 @@ export const EditarPropiedad = () => {
   const [alertData, setAlertData] = useState({ type: '', message: '' });
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/${tipo === 'Garaje' ? 'garajes' : 'estacionamientos'}/${id}`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/${tipo === 'Garaje' ? 'garajes' : 'estacionamientos'}/${id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('easypark_token')}` }
     })
       .then(res => res.json())
@@ -65,7 +65,7 @@ export const EditarPropiedad = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/api/${tipo === 'Garaje' ? 'garajes' : 'estacionamientos'}/editar/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/${tipo === 'Garaje' ? 'garajes' : 'estacionamientos'}/editar/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

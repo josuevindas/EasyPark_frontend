@@ -35,7 +35,9 @@ export const Login = () => {
       const token = await userCredential.user.getIdToken();
 
       localStorage.setItem('easypark_token', token);
-      const response = await fetch('http://localhost:3001/api/login/login', {
+      
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/login/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -18,7 +18,7 @@ export const AdmPendientes = () => {
   const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("easypark_token");
-    console.log(tipoUsuarioEditando)
+   
     if (!token) {
      navigate("/");
     }
@@ -28,19 +28,20 @@ export const AdmPendientes = () => {
 
   const fetchPendientes = async () => {
     const token = localStorage.getItem("easypark_token");
-
+console.log(token)
   if (!token) {
     setAlertCustom({ type: 'error', message: 'No autorizado' });
     return;
   }
     try {
-      const response = await fetch('http://localhost:3001/api/usuarios/pendientes', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/usuarios/`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       if (response.ok) {
+        console.log(response)
         const data = await response.json();
         setPendientes(data);
       } else {
@@ -76,7 +77,7 @@ export const AdmPendientes = () => {
    
    
     try {
-      const response = await fetch(`http://localhost:3001/api/usuarios/${usuarioSeleccionado.idUsuario}/tipo`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/usuarios/${usuarioSeleccionado.idUsuario}/tipo`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -89,6 +90,8 @@ export const AdmPendientes = () => {
         
          setAlertCustom({ type: 'success', message: 'cambio correcto' });
         handleCloseModal();
+        fetchPendientes(); 
+
       } else {
         console.error('Error al actualizar el tipo de usuario:', response.statusText);
       }

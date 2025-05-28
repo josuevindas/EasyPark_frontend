@@ -3,7 +3,7 @@ import React from 'react';
 function TestRegister() {
     const handleClick = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/usuarios/register', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/usuarios/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -58,7 +58,7 @@ export const EditarUsuario = () => {
   useEffect(() => {
     if (!verificada) return;
 
-    fetch(`http://localhost:3001/api/usuarios/${id}`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/usuarios/${id}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -101,7 +101,7 @@ export const EditarUsuario = () => {
 
     const uidFirebase = auth.currentUser?.uid;
 
-    fetch(`http://localhost:3001/api/usuarios/editar/${id}`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/usuarios/editar/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
