@@ -13,6 +13,8 @@ export const MapPage = () => {
   const [nearbyParkings, setNearbyParkings] = useState([]);
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [selectedParking, setSelectedParking] = useState(null);
+  const [mostrarLista, setMostrarLista] = useState(true);
+
 const [duracionViaje, setDuracionViaje] = useState('');
   const [formData, setFormData] = useState({
     origin: '',
@@ -250,7 +252,7 @@ const handleMarkerClick = (parking) => {
             new AdvancedMarkerElement({
               map: mapInstance.current,
               position: { lat: parking.latitud, lng: parking.longitud },
-              title: parking.nombre,
+              title: parking.nombre ?? 'Garaje',
               content: img
             });
 
@@ -439,17 +441,28 @@ const handleMarkerClick = (parking) => {
         </div>
       )}
       {selectedParking && (
-        <div className="info-panel bg-light p-3 shadow rounded position-absolute" style={{ bottom: 20, left: 20, zIndex: 1000 }}>
+        <div className="info-panel bg-light p-3 shadow rounded position-absolute" style={{ bottom: 20, left: 20, zIndex: 1000, width: window.innerWidth <= 768 ? '100%' : 'auto' }}>
           <h5>{selectedParking.tipo}</h5>
-          <p><strong>Dirección:</strong> {selectedParking.direccion}</p>
+           <p><strong>Dirección:</strong> {selectedParking.direccion}</p>
           <p><strong>Disponibilidad:</strong> {selectedParking.disponibilidad}</p>
           <p><strong>Duración estimada:</strong> {duracionViaje}</p>
-          <button className="btn btn-primary" onClick={handleReservar}>
+        
+          <button className="btn btn-primary mt-2" onClick={handleReservar}>
             Reservar
           </button>
+          <button
+            className="btn btn-secondary mt-2"
+            onClick={() => {
+              setSelectedParking(null);
+              setMostrarLista(true);
+            }}
+          >
+            Retroceso
+          </button>
+        
         </div>
       )}
-
+    {mostrarLista && (
       <div className="parkings-list-container">
         <h5 className="parkings-list-title">Parqueos cercanos</h5>
         <div className="parkings-list">
@@ -462,6 +475,9 @@ const handleMarkerClick = (parking) => {
                   focusOnParking(parking);
                     setSelectedParking(parking);   // mostrar el panel de reserva
                   calcularDuracion(userLocation, { lat: parking.location.lat, lng: parking.location.lng });
+                  if (window.innerWidth <= 768) {
+                    setMostrarLista(false);
+                  }
 
                 }}
               >
@@ -475,7 +491,7 @@ const handleMarkerClick = (parking) => {
         </div>
       </div>
 
-      
+        )}
 
       
 
