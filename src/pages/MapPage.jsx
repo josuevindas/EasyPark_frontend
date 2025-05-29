@@ -16,6 +16,7 @@ export const MapPage = () => {
   const [selectedParking, setSelectedParking] = useState(null);
   const [mostrarLista, setMostrarLista] = useState(true);
 const [showConfirm, setShowConfirm] = useState(false);
+const [alertCustom, setAlertCustom] = useState({ type: '', message: '' });
 
 const [duracionViaje, setDuracionViaje] = useState('');
   const [formData, setFormData] = useState({
@@ -29,7 +30,8 @@ const [duracionViaje, setDuracionViaje] = useState('');
 
   useEffect(() => {
     if (!navigator.geolocation) {
-      setError("Tu navegador no soporta geolocalización");
+      setAlertCustom({ type: 'error', message: 'NO soporta da geolocalización' });
+
       setUserLocation({ lat: 10.003649986156336 , lng: -84.14259788597299 });
       return;
     }
@@ -44,7 +46,8 @@ const [duracionViaje, setDuracionViaje] = useState('');
       },
       (err) => {
         //console.error("Error de geolocalización:", err);
-        setError("No se pudo obtener tu ubicación");
+        setAlertCustom({ type: 'error', message: 'Error al cargar la ubicacion.' });
+
         setUserLocation({ lat: 10.003649986156336 , lng: -84.14259788597299 });
       },
       { enableHighAccuracy: true, timeout: 5000 }
@@ -157,7 +160,8 @@ const [duracionViaje, setDuracionViaje] = useState('');
 
       } catch (err) {
         console.error("Error al inicializar el mapa:", err);
-        setError("Error al cargar el mapa. Recarga la página.");
+        setAlertCustom({ type: 'error', message: 'Error al cargar el mapa. Recarga la página.' });
+
         setLoading(false);
       }
     };
@@ -170,7 +174,8 @@ const [duracionViaje, setDuracionViaje] = useState('');
       script.async = true;
       script.defer = true;
       script.onerror = () => {
-        setError("Error al cargar Google Maps");
+        setAlertCustom({ type: 'error', message: 'Error al cargar el mapa. Recarga la página.' });
+
         setLoading(false);
       };
       window.initMap = initMap;
@@ -232,7 +237,7 @@ const handleMarkerClick = (parking) => {
 
       const cercanos = data
         .map(parking => {
-          console.log("parking:", parking);
+          
           const distance = calculateDistance(
             userLocation.lat,
             userLocation.lng,
@@ -249,7 +254,7 @@ const handleMarkerClick = (parking) => {
             img.src = iconUrl;
             img.style.width = '40px';
             img.style.height = '40px';
-            console.log("parking:", parking);
+            
             new AdvancedMarkerElement({
               map: mapInstance.current,
               position: { lat: parking.latitud, lng: parking.longitud },
@@ -262,6 +267,8 @@ const handleMarkerClick = (parking) => {
               name: parking.nombre,
               tipo: parking.tipo,
               distance,
+              disponibilidad: parking.camposlibres,
+              direccion: parking.direccion,
               location: {
                 lat: parking.latitud,
                 lng: parking.longitud
@@ -275,7 +282,8 @@ const handleMarkerClick = (parking) => {
       setNearbyParkings(cercanos);
     } catch (err) {
       console.error("Error al buscar parqueos:", err);
-      setError("No se pudieron cargar parqueos cercanos");
+     setAlertCustom({ type: 'error', message: 'Error al cargar la los parqueos . Recarga la página.' });
+
     }
   };
 
@@ -333,15 +341,26 @@ const handleMarkerClick = (parking) => {
 const confirmarReserva = async () => {
   setShowConfirm(false); // Cerrar el modal
 
-  const token = localStorage.getItem("easypark_token");
-  const usuario_id = localStorage.getItem("id_usuario");
+ const tipoParqueo = selectedParking.tipo;
+const parqueo_id = selectedParking.id;
 
-  const body = {
-    usuario_id,
-    fecha_reserva: new Date().toISOString().split("T")[0],
-    hora_reserva: new Date().toTimeString().split(" ")[0].slice(0,5),
-    estado: 'pendiente'
-  };
+const usuario_id = localStorage.getItem("iduser");
+const nombre_usuario = localStorage.getItem("nombre");
+const token = localStorage.getItem("easypark_token");
+
+const qrContent = `QR-${nombre_usuario}-${usuario_id}-${parqueo_id}-${tipoParqueo}`;
+
+const body = {
+  usuario_id: parseInt(usuario_id),
+  estacionamiento_id: tipoParqueo === "Estacionamiento" ? parqueo_id : null,
+  garaje_id: tipoParqueo === "Garaje" ? parqueo_id : null,
+  qr_code: qrContent,
+  estado: "pendiente",
+  fecha_reserva: new Date().toISOString().split("T")[0],
+  hora_reserva: new Date().toTimeString().split(" ")[0].slice(0, 5),
+  penalizacion: null // se permite null según el diseño de la tabla
+};
+
 
   if (selectedParking.tipo === "Garaje") {
     body.garaje_id = selectedParking.id;
@@ -350,7 +369,7 @@ const confirmarReserva = async () => {
   }
 
   try {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/reservas`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/propiedades/reservas`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -360,13 +379,32 @@ const confirmarReserva = async () => {
     });
 
     if (!res.ok) throw new Error("Error al reservar");
-    alert("Reserva enviada correctamente");
+     const data = await res.json(); // 👈 Obtener respuesta del backend
+
+    setAlertCustom({ type: "success", message: "Reserva enviada correctamente" });
+
     setSelectedParking(null);
     setMostrarLista(true);
+
+    navigate("/reservas", {
+      state: {
+        qr_code: data.qr_code,
+        estado: data.estado,
+        penalizacion: data.penalizacion,
+        tipo: data.tipo,
+        latitud: selectedParking.location.lat,
+        longitud: selectedParking.location.lng,
+        direccion: selectedParking.direccion,
+        nombre: selectedParking.name || 'Garaje'
+      }
+    });
+
+ // Redirigir a la página de reservas
   } catch (error) {
-    console.error(error);
-    alert("Ocurrió un error al reservar.");
-  }
+  console.error(error);
+  setAlertCustom({ type: "error", message: "Ocurrió un error al reservar." });
+}
+
 };
 
   const focusIfTooFar = () => {
@@ -391,12 +429,7 @@ const confirmarReserva = async () => {
 
   return (
     <div className="map-fullscreen-container">
-      {error && (
-        <div className="alert alert-danger">
-          {error}
-          <button onClick={() => setError(null)} className="close">&times;</button>
-        </div>
-      )}
+     
 
       {loading && (
         <div className="map-loading-overlay">
@@ -450,7 +483,7 @@ const confirmarReserva = async () => {
           <h5>{selectedParking.tipo}</h5>
           
            <p><strong>Dirección:</strong> {selectedParking.direccion}</p>
-          <p><strong>Disponibilidad:</strong> {selectedParking.disponibilidad}</p>
+          <p><strong>Campos Libres:</strong> {selectedParking.disponibilidad}</p>
           <p><strong>Duración estimada:</strong> {duracionViaje}</p>
         
           <button className="btn btn-primary mt-2" onClick={handleReservar}>
@@ -513,6 +546,14 @@ const confirmarReserva = async () => {
           onClose={() => setShowConfirm(false)}
         />
       )}
+      {alertCustom.message && (
+  <Alert
+    type={alertCustom.type}
+    message={alertCustom.message}
+    onClose={() => setAlertCustom({ type: '', message: '' })}
+  />
+)}
+
 
     </div>
   );
