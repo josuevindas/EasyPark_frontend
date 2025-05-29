@@ -43,7 +43,7 @@ const [duracionViaje, setDuracionViaje] = useState('');
         setUserLocation(location);
       },
       (err) => {
-        console.error("Error de geolocalización:", err);
+        //console.error("Error de geolocalización:", err);
         setError("No se pudo obtener tu ubicación");
         setUserLocation({ lat: 10.003649986156336 , lng: -84.14259788597299 });
       },
@@ -54,7 +54,6 @@ const [duracionViaje, setDuracionViaje] = useState('');
   useEffect(() => {
     if (userLocation) {
       getLocationInfo(userLocation);
-      console.log("📍 Mi ubicación actual es:", userLocation);
     }
   }, [userLocation]);
 
@@ -229,11 +228,11 @@ const handleMarkerClick = (parking) => {
       });
 
       const data = await response.json();
-      console.log("Datos de parqueos cercanos:", data);
       const { AdvancedMarkerElement } = window.google.maps.marker;
 
       const cercanos = data
         .map(parking => {
+          console.log("parking:", parking);
           const distance = calculateDistance(
             userLocation.lat,
             userLocation.lng,
@@ -250,11 +249,11 @@ const handleMarkerClick = (parking) => {
             img.src = iconUrl;
             img.style.width = '40px';
             img.style.height = '40px';
-
+            console.log("parking:", parking);
             new AdvancedMarkerElement({
               map: mapInstance.current,
               position: { lat: parking.latitud, lng: parking.longitud },
-              title: parking.nombre ?? 'Garaje',
+              title: parking.tipo === 'Garaje' ? 'Garaje' : parking.nombre,
               content: img
             });
 
@@ -449,6 +448,7 @@ const confirmarReserva = async () => {
       {selectedParking && (
         <div className="info-panel bg-light p-3 shadow rounded position-absolute" style={{ bottom: 20, left: 20, zIndex: 1000, width: window.innerWidth <= 768 ? '100%' : 'auto' }}>
           <h5>{selectedParking.tipo}</h5>
+          
            <p><strong>Dirección:</strong> {selectedParking.direccion}</p>
           <p><strong>Disponibilidad:</strong> {selectedParking.disponibilidad}</p>
           <p><strong>Duración estimada:</strong> {duracionViaje}</p>
@@ -491,7 +491,7 @@ const confirmarReserva = async () => {
 
                 }}
               >
-                <div className="parking-name">{parking.name}</div>
+                <div className="parking-name">{parking.tipo === 'Garaje' ? 'Garaje' : parking.name }</div>
                 <div className="parking-distance">{parking.distance} km</div>
               </div>
             ))
