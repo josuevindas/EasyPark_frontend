@@ -29,7 +29,7 @@ export const AdministrarPropiedad = () => {
         setCamposLibres(parseInt(data.camposLibres));
         setDisponibilidad(parseInt(data.disponibilidad));
         if (tipo === 'Garaje') {
-          setEstado(data.disponibilidad === 'Disponible' || parseInt(data.camposLibres) > 0);
+          setEstado(data.estado === 'disponible' );
         }
       })
       .catch(() => {
@@ -63,7 +63,7 @@ export const AdministrarPropiedad = () => {
     const body = { camposLibres };
 
     if (tipo === 'Garaje') {
-      body.disponibilidad = estado ? 'Disponible' : 'Ocupado';
+      body.estado = estado ? 'disponible' : 'ocupado';
     }
 
     try {

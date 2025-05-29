@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../assets/css/MapPage.css';
+import garajeimg from "../assets/img/garage.png";
+import parqueoimg from "../assets/img/parking.png";
+
 
 export const MapPage = () => {
   const [userLocation, setUserLocation] = useState(null);
@@ -10,7 +13,7 @@ export const MapPage = () => {
   const [nearbyParkings, setNearbyParkings] = useState([]);
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [selectedParking, setSelectedParking] = useState(null);
-
+const [duracionViaje, setDuracionViaje] = useState('');
   const [formData, setFormData] = useState({
     origin: '',
     destination: ''
@@ -50,6 +53,22 @@ export const MapPage = () => {
       console.log("📍 Mi ubicación actual es:", userLocation);
     }
   }, [userLocation]);
+
+  const calcularDuracion = (origen, destino) => {
+  const service = new window.google.maps.DirectionsService();
+  service.route({
+    origin: origen,
+    destination: destino,
+    travelMode: 'DRIVING'
+  }, (result, status) => {
+    if (status === 'OK') {
+      const duracion = result.routes[0].legs[0].duration.text;
+      setDuracionViaje(duracion);
+    } else {
+      setDuracionViaje('No disponible');
+    }
+  });
+};
 
   const getLocationInfo = async (location) => {
     if (!window.google || !window.google.maps) return;
@@ -111,13 +130,14 @@ export const MapPage = () => {
           center: userLocation,
           zoom: 14,
           disableDefaultUI: true,
-          gestureHandling: "greedy"
+          gestureHandling: "greedy",
+          mapId: 'f145ef9e17dfd1237ec834e9' 
         });
 
         const { AdvancedMarkerElement } = window.google.maps.marker;
         const userIcon = document.createElement('div');
-        userIcon.style.width = '12px';
-        userIcon.style.height = '12px';
+        userIcon.style.width = '40px';
+        userIcon.style.height = '40px';
         userIcon.style.borderRadius = '50%';
         userIcon.style.backgroundColor = '#4285F4';
         userIcon.style.border = '2px solid white';
@@ -189,6 +209,10 @@ export const MapPage = () => {
       }
     });
   };
+const handleMarkerClick = (parking) => {
+  setSelectedParking(parking);
+  calcularDuracion(userLocation, { lat: parking.latitud, lng: parking.longitud });
+};
 
   const findNearbyParkings = async () => {
     if (!userLocation) return;
@@ -201,6 +225,7 @@ export const MapPage = () => {
       });
 
       const data = await response.json();
+      console.log("Datos de parqueos cercanos:", data);
       const { AdvancedMarkerElement } = window.google.maps.marker;
 
       const cercanos = data
@@ -214,13 +239,13 @@ export const MapPage = () => {
 
           if (distance <= 10) {
             const iconUrl = parking.tipo === 'Garaje'
-              ? '/icons/garage.png'
-              : '/icons/parking.png';
-
+              ? garajeimg
+              : parqueoimg;
+           
             const img = document.createElement('img');
             img.src = iconUrl;
-            img.style.width = '30px';
-            img.style.height = '30px';
+            img.style.width = '40px';
+            img.style.height = '40px';
 
             new AdvancedMarkerElement({
               map: mapInstance.current,
@@ -298,7 +323,45 @@ export const MapPage = () => {
     mapInstance.current.setZoom(15);
   };
 
-  
+  const handleReservar = async () => {
+  const confirmado = window.confirm("¿Está seguro de reservar este parqueo?");
+  if (!confirmado) return;
+
+  const token = localStorage.getItem("easypark_token");
+  const usuario_id = localStorage.getItem("id_usuario");
+
+  const body = {
+    usuario_id,
+    fecha_reserva: new Date().toISOString().split("T")[0], // Hoy
+    hora_reserva: new Date().toTimeString().split(" ")[0].slice(0,5), // Hora actual HH:MM
+    estado: 'pendiente'
+  };
+
+  if (selectedParking.tipo === "Garaje") {
+    body.garaje_id = selectedParking.id;
+  } else {
+    body.estacionamiento_id = selectedParking.id;
+  }
+
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/reservas`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) throw new Error("Error al reservar");
+    alert("Reserva enviada correctamente");
+    setSelectedParking(null); // Oculta el panel
+  } catch (error) {
+    console.error(error);
+    alert("Ocurrió un error al reservar.");
+  }
+};
+
   const focusIfTooFar = () => {
     if (!mapInstance.current || !userLocation) return;
 
@@ -375,6 +438,17 @@ export const MapPage = () => {
           </div>
         </div>
       )}
+      {selectedParking && (
+        <div className="info-panel bg-light p-3 shadow rounded position-absolute" style={{ bottom: 20, left: 20, zIndex: 1000 }}>
+          <h5>{selectedParking.tipo}</h5>
+          <p><strong>Dirección:</strong> {selectedParking.direccion}</p>
+          <p><strong>Disponibilidad:</strong> {selectedParking.disponibilidad}</p>
+          <p><strong>Duración estimada:</strong> {duracionViaje}</p>
+          <button className="btn btn-primary" onClick={handleReservar}>
+            Reservar
+          </button>
+        </div>
+      )}
 
       <div className="parkings-list-container">
         <h5 className="parkings-list-title">Parqueos cercanos</h5>
@@ -384,7 +458,12 @@ export const MapPage = () => {
               <div
                 key={parking.id}
                 className="parking-item"
-                onClick={() => focusOnParking(parking)}
+                onClick={() => {
+                  focusOnParking(parking);
+                    setSelectedParking(parking);   // mostrar el panel de reserva
+                  calcularDuracion(userLocation, { lat: parking.location.lat, lng: parking.location.lng });
+
+                }}
               >
                 <div className="parking-name">{parking.name}</div>
                 <div className="parking-distance">{parking.distance} km</div>
@@ -396,28 +475,9 @@ export const MapPage = () => {
         </div>
       </div>
 
-      {/* Botón: Ir a mi ubicación */}
-      <button
-        className="btn btn-primary my-location-button"
-        onClick={() => {
-          if (mapInstance.current && userLocation) {
-            mapInstance.current.setCenter(userLocation);
-            mapInstance.current.setZoom(16);
-          }
-        }}
-        title="Ir a mi ubicación"
-      >
-        📍
-      </button>
+      
 
-      {/* 🔘 NUEVO Botón: Centrar si estoy lejos */}
-      <button
-        className="btn btn-outline-secondary adjust-location-button"
-        onClick={focusIfTooFar}
-        title="Centrar si estoy lejos"
-      >
-        📡 Centrar si estoy lejos
-      </button>
+      
 
       <div ref={mapRef} className="map-fullscreen"></div>
     </div>
