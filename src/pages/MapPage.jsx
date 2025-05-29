@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import '../assets/css/MapPage.css';
 import garajeimg from "../assets/img/garage.png";
 import parqueoimg from "../assets/img/parking.png";
+import { Alert, Confirm } from '../components/ModalAlert';
 
 
 export const MapPage = () => {
@@ -14,6 +15,7 @@ export const MapPage = () => {
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [selectedParking, setSelectedParking] = useState(null);
   const [mostrarLista, setMostrarLista] = useState(true);
+const [showConfirm, setShowConfirm] = useState(false);
 
 const [duracionViaje, setDuracionViaje] = useState('');
   const [formData, setFormData] = useState({
@@ -326,16 +328,19 @@ const handleMarkerClick = (parking) => {
   };
 
   const handleReservar = async () => {
-  const confirmado = window.confirm("¿Está seguro de reservar este parqueo?");
-  if (!confirmado) return;
+  setShowConfirm(true); // Mostrar el modal personalizado
+};
+
+const confirmarReserva = async () => {
+  setShowConfirm(false); // Cerrar el modal
 
   const token = localStorage.getItem("easypark_token");
   const usuario_id = localStorage.getItem("id_usuario");
 
   const body = {
     usuario_id,
-    fecha_reserva: new Date().toISOString().split("T")[0], // Hoy
-    hora_reserva: new Date().toTimeString().split(" ")[0].slice(0,5), // Hora actual HH:MM
+    fecha_reserva: new Date().toISOString().split("T")[0],
+    hora_reserva: new Date().toTimeString().split(" ")[0].slice(0,5),
     estado: 'pendiente'
   };
 
@@ -357,7 +362,8 @@ const handleMarkerClick = (parking) => {
 
     if (!res.ok) throw new Error("Error al reservar");
     alert("Reserva enviada correctamente");
-    setSelectedParking(null); // Oculta el panel
+    setSelectedParking(null);
+    setMostrarLista(true);
   } catch (error) {
     console.error(error);
     alert("Ocurrió un error al reservar.");
@@ -450,6 +456,9 @@ const handleMarkerClick = (parking) => {
           <button className="btn btn-primary mt-2" onClick={handleReservar}>
             Reservar
           </button>
+          
+         
+        {window.innerWidth <= 768 && (
           <button
             className="btn btn-secondary mt-2"
             onClick={() => {
@@ -459,7 +468,8 @@ const handleMarkerClick = (parking) => {
           >
             Retroceso
           </button>
-        
+        )}
+
         </div>
       )}
     {mostrarLista && (
@@ -496,6 +506,14 @@ const handleMarkerClick = (parking) => {
       
 
       <div ref={mapRef} className="map-fullscreen"></div>
+      {showConfirm && (
+        <Confirm
+          message="¿Está seguro de reservar este parqueo?"
+          onConfirm={confirmarReserva}
+          onClose={() => setShowConfirm(false)}
+        />
+      )}
+
     </div>
   );
 };
