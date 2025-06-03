@@ -385,19 +385,8 @@ const body = {
 
     setSelectedParking(null);
     setMostrarLista(true);
-
-    navigate("/reservas", {
-      state: {
-        qr_code: data.qr_code,
-        estado: data.estado,
-        penalizacion: data.penalizacion,
-        tipo: data.tipo,
-        latitud: selectedParking.location.lat,
-        longitud: selectedParking.location.lng,
-        direccion: selectedParking.direccion,
-        nombre: selectedParking.name || 'Garaje'
-      }
-    });
+    
+    navigate("/ReservasPage");
 
  // Redirigir a la página de reservas
   } catch (error) {

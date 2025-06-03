@@ -16,11 +16,49 @@ export const Layout = ({ children, isLoggedIn }) => {
   const [confirm, setConfirm] = useState({ type: "", message: "" });
   const [dataCurrentStep, setDataCurrentStep] = useState("");
   const [menuOpen, setMenuOpen] = useState(false); // 👉 estado para toggle
+  const [reservasPendientes, setReservasPendientes] = useState(0);
 
-  useEffect(() => {
-    const tipoUsuario = localStorage.getItem("rol");
-    setRolUsuario(tipoUsuario);
-  }, [location]);
+
+ useEffect(() => {
+  const obtenerRolYPendientes = async () => {
+    try {
+      // 1. Obtener rol desde localStorage
+      const tipoUsuario = localStorage.getItem("rol");
+      setRolUsuario(tipoUsuario);
+
+      const token = localStorage.getItem("easypark_token");
+      if (!token) return;
+
+      // 2. Construir URL según el rol
+      let url = "";
+      if (tipoUsuario === "cliente") {
+        const idUsuario = localStorage.getItem("iduser");
+        url = `${import.meta.env.VITE_API_URL}/api/propiedades/usuario/${idUsuario}/pendientes`;
+      } else if (tipoUsuario === "propietario") {
+        url = `${import.meta.env.VITE_API_URL}/api/propiedades/pendientes`;
+      }
+
+      // 3. Llamar al backend si hay URL
+      if (url) {
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await res.json();
+        setReservasPendientes(data.total || data.length || 0);
+      }
+    } catch (err) {
+      console.error("Error al obtener rol o reservas pendientes:", err);
+    }
+  };
+
+  obtenerRolYPendientes();
+}, [location]);
+
 
   
 
@@ -68,11 +106,37 @@ export const Layout = ({ children, isLoggedIn }) => {
                   <>
                 <li className="nav-item"><Link className="nav-link" to="/Adm" onClick={() => handleNavLinkClick(setMenuOpen)}>Registrar Parqueos</Link></li>
                <li className="nav-item"><Link className="nav-link" to="/MisPropiedades" onClick={() => handleNavLinkClick(setMenuOpen)}>Editar Propiedades</Link></li>
-               
+               <Link
+                  className="nav-link position-relative fw-bold"
+                  style={{ color: reservasPendientes > 0 ? "#dc3545" : "" }} // rojo Bootstrap
+                  to="/AdmReservas"
+                  onClick={() => handleNavLinkClick(setMenuOpen)}
+                >
+                  Administrar Reservas
+                  {reservasPendientes > 0 && (
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                      {reservasPendientes}
+                    </span>
+                  )}
+                </Link>
+
+
                 </>
                 )}
                 {rolUsuario === "cliente" && (
                   <>
+
+                  <li className="nav-item">
+                    <Link className={`nav-link position-relative ${reservasPendientes > 0 ? "text-danger fw-bold" : ""}`} to="/ReservasPage" onClick={() => handleNavLinkClick(setMenuOpen)}>
+                       Reservas
+                      {reservasPendientes > 0 && (
+                        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                          {reservasPendientes}
+                        </span>
+                      )}
+                    </Link>
+                  </li>
+
                 <li className="nav-item"><Link className="nav-link" to="/map" onClick={() => handleNavLinkClick(setMenuOpen)}>Reservar</Link></li>
                
                 </>

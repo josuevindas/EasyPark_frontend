@@ -18,7 +18,10 @@ import { MisPropiedades } from './pages/MisPropiedades.jsx'
 import { EditarPropiedad } from './pages/EditarPropiedad.jsx';
 import { EditarUsuario } from './pages/EditarUsuario.jsx'
 import { AdministrarPropiedad } from './pages/AdmPropiedad.jsx'   
-
+import { ReservasPage } from './pages/ReservasPage.jsx' 
+import {Comentario} from './pages/Comentario.jsx'
+import { MapaReserva } from './pages/MapaReserva.jsx'
+import {AdmReservas} from './pages/AdmReservas.jsx'
 
 
 
@@ -36,8 +39,12 @@ function App() {
           <Route path="/EditarUsuario" element={<EditarUsuario />} />
           <Route path="/AdmPendientes" element={<AdmPendientes />} />
           <Route path="/MisPropiedades" element={<MisPropiedades />} />
+          <Route path="/AdmReservas" element={<AdmReservas />} />
+          <Route path="/MapaReserva" element={<MapaReserva />} />
           <Route path="/EditarPropiedad/:id/:tipo" element={<EditarPropiedad />} />
+          <Route path="/Comentario" element={<Comentario />} />
            <Route path="/AdministrarPropiedad/:id/:tipo" element={<AdministrarPropiedad />} />
+           <Route path="/ReservasPage" element={<ReservasPage />} />
           <Route path="/Pendiente" element={<Pendiente />} />
            <Route path="/Registrar" element={<Registrar />} />
           <Route path="/Adm" element={<ParkAdm />} />

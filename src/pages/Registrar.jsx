@@ -46,9 +46,7 @@ const [mostrar, setMostrar] = useState(false); // 👈 Nuevo estado
      useEffect(() => {
         
         const token = localStorage.getItem("easypark_token");
-        if (!token) {
-          navigate("/");
-        }
+       
       }, []); 
  const onRegistrar = (e) => {
   e.preventDefault();

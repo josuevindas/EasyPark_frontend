@@ -36,11 +36,11 @@ export const handleRegistrar = async ({
   }
 
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/registro/registrar`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/usuarios/registrar`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        
       },
       body: JSON.stringify({
         nombre,
@@ -53,6 +53,7 @@ export const handleRegistrar = async ({
     });
 
     const result = await response.json();
+    console.log("✅ Registro exitoso:", result);
 
     if (response.ok) {
       setAlertCustom({ type: 'success', message: 'Usuario registrado con éxito' });
