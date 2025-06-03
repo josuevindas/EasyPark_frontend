@@ -54,12 +54,14 @@ export const handleRegistrar = async ({
 
     const result = await response.json();
     console.log("✅ Registro exitoso:", result);
-
+    const user = result.User;
+    localStorage.setItem('iduser', user.idUsuario);
+    localStorage.setItem('rol', user.tipo_usuarios);
+    localStorage.setItem('nombre', user.nombre);
+    resetFormulario();
     if (response.ok) {
       setAlertCustom({ type: 'success', message: 'Usuario registrado con éxito' });
-       localStorage.setItem('iduser', result.idUsuario);
-       localStorage.setItem('rol', result.tipo_usuarios);
-       localStorage.setItem('nombre', result.nombre);
+       
       await new Promise(resolve => setTimeout(resolve, 1000));
       // Firebase auth opcional
       if (setEmailAuth) {
@@ -69,11 +71,12 @@ export const handleRegistrar = async ({
         localStorage.setItem('easypark_token', token);
       }
 
-      resetFormulario();
+      
        
       if (tipoUsuarios === 'propietariop') {
        
         navigate('/Pendiente');
+        
       } else if (tipoUsuarios === 'cliente') {
         
         navigate('/Bienvenida'); // o donde quieras

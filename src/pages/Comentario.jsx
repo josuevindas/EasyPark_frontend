@@ -10,54 +10,89 @@ export const Comentario= () => {
   const [comentario, setComentario] = useState("");
   const [puntuacion, setPuntuacion] = useState(0);
 
-  const buscar = async () => {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/estacionamientos?nombre=${busqueda}`);
+ const buscar = async () => {
+  if (!busqueda.trim()) return;
+
+  const token = localStorage.getItem("easypark_token"); // Asegúrate de haberlo guardado con este nombre
+
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/comentarios/estacionamientos?nombre=${encodeURIComponent(busqueda)}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) throw new Error("Error al buscar parqueos");
+
     const data = await res.json();
     setResultados(data);
-  };
+  } catch (error) {
+    console.error("Error en búsqueda:", error);
+  }
+};
+
+
 
   const enviarComentario = async () => {
   const usuarioId = localStorage.getItem("iduser");
-  const token = localStorage.getItem("token"); // Asegúrate que esté guardado al iniciar sesión
+  const token = localStorage.getItem("easypark_token");
 
+  // Validar que haya un seleccionado
+  if (!seleccionado) {
+    alert("Debe seleccionar un parqueo primero.");
+    return;
+  }
+
+  // Construir el body dinámicamente
   const body = {
     usuario_id: usuarioId,
-    estacionamiento_id: seleccionado.id,
     puntuacion,
     comentario,
     fecha: new Date(),
   };
 
+  if (seleccionado.tipo === "estacionamiento") {
+    body.estacionamiento_id = seleccionado.id;
+  } else if (seleccionado.tipo === "garaje") {
+    body.garaje_id = seleccionado.id;
+  } else {
+    alert("Tipo de parqueo desconocido.");
+    return;
+  }
+
   try {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/comentarios`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/comentarios/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}` // Aquí se envía el token
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(body),
     });
 
     if (!res.ok) throw new Error("Error al enviar comentario");
 
-    alert("Comentario enviado");
+    alert("Comentario enviado con éxito.");
     setMostrarModal(false);
     setComentario("");
     setPuntuacion(0);
   } catch (err) {
-    console.error(err);
+    console.error("Error al enviar comentario:", err);
     alert("Hubo un error al enviar el comentario.");
   }
 };
 
 
+
   return (
     <div className="container mt-4">
       <h3>Buscar Estacionamiento</h3>
+      <h2>Nombre del estacionamiento o del propietario(Garaje Privado)</h2>
       <input
         type="text"
         className="form-control mb-3"
-        placeholder="Nombre del estacionamiento"
+        placeholder="Nombre"
         value={busqueda}
         onChange={(e) => setBusqueda(e.target.value)}
       />
@@ -73,14 +108,18 @@ export const Comentario= () => {
               setMostrarModal(true);
             }}
           >
-            {est.nombre}
+            {est.tipo === "garaje" ? `Garaje: ${est.nombre}` : est.nombre}
           </li>
+
         ))}
       </ul>
 
       <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Agregar comentario a {seleccionado?.nombre}</Modal.Title>
+          <Modal.Title>
+            Agregar comentario a {seleccionado?.tipo === "garaje" ? `Garaje: ${seleccionado.nombre}` : seleccionado?.nombre}
+          </Modal.Title>
+
         </Modal.Header>
         <Modal.Body>
           <Form.Group>
@@ -94,13 +133,23 @@ export const Comentario= () => {
           </Form.Group>
           <Form.Group className="mt-3">
             <Form.Label>Puntuación</Form.Label>
-            <Form.Select value={puntuacion} onChange={(e) => setPuntuacion(parseInt(e.target.value))}>
-              <option value={0}>Selecciona</option>
+            <div>
               {[1, 2, 3, 4, 5].map((n) => (
-                <option key={n} value={n}>{n} estrella{n > 1 && "s"}</option>
+                <span
+                  key={n}
+                  onClick={() => setPuntuacion(n)}
+                  style={{
+                    cursor: "pointer",
+                    fontSize: "2rem",
+                    color: n <= puntuacion ? "#ffc107" : "#e4e5e9",
+                  }}
+                >
+                  ★
+                </span>
               ))}
-            </Form.Select>
+            </div>
           </Form.Group>
+
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setMostrarModal(false)}>Cancelar</Button>

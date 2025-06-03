@@ -136,6 +136,7 @@ export const Layout = ({ children, isLoggedIn }) => {
                       )}
                     </Link>
                   </li>
+                  <li className="nav-item"><Link className="nav-link" to="/Comentario" onClick={() => handleNavLinkClick(setMenuOpen)}>Reseña</Link></li>
 
                 <li className="nav-item"><Link className="nav-link" to="/map" onClick={() => handleNavLinkClick(setMenuOpen)}>Reservar</Link></li>
                

@@ -4,7 +4,7 @@ import '../assets/css/MapPage.css';
 import garajeimg from "../assets/img/garage.png";
 import parqueoimg from "../assets/img/parking.png";
 import { Alert, Confirm } from '../components/ModalAlert';
-
+import { ModalComentarios } from '../components/ModalComentarios';
 
 export const MapPage = () => {
   const [userLocation, setUserLocation] = useState(null);
@@ -17,6 +17,8 @@ export const MapPage = () => {
   const [mostrarLista, setMostrarLista] = useState(true);
 const [showConfirm, setShowConfirm] = useState(false);
 const [alertCustom, setAlertCustom] = useState({ type: '', message: '' });
+const [comentariosData, setComentariosData] = useState({});
+const [modalComentarios, setModalComentarios] = useState({ mostrar: false, comentarios: [], promedio: 0 });
 
 const [duracionViaje, setDuracionViaje] = useState('');
   const [formData, setFormData] = useState({
@@ -222,70 +224,89 @@ const handleMarkerClick = (parking) => {
   calcularDuracion(userLocation, { lat: parking.latitud, lng: parking.longitud });
 };
 
-  const findNearbyParkings = async () => {
-    if (!userLocation) return;
+ // dentro del mismo archivo MapPage.jsx
 
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/propiedades/cercanas`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('easypark_token')}`
-        }
-      });
+const fetchComentarios = async (tipo, id) => {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/comentarios/propiedad/${tipo}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('easypark_token')}`
+      }
+    });
+    const data = await res.json();
+    return {
+      promedio: data.promedio || 5,
+      comentarios: data.comentarios || []
+    };
+  } catch (err) {
+    console.error(`Error al obtener comentarios de ${tipo} ${id}:`, err);
+    return { promedio: 5, comentarios: [] }; // por defecto
+  }
+};
 
-      const data = await response.json();
-      const { AdvancedMarkerElement } = window.google.maps.marker;
+const findNearbyParkings = async () => {
+  if (!userLocation) return;
 
-      const cercanos = data
-        .map(parking => {
-          
-          const distance = calculateDistance(
-            userLocation.lat,
-            userLocation.lng,
-            parking.latitud,
-            parking.longitud
-          );
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/propiedades/cercanas`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('easypark_token')}`
+      }
+    });
 
-          if (distance <= 10) {
-            const iconUrl = parking.tipo === 'Garaje'
-              ? garajeimg
-              : parqueoimg;
-           
-            const img = document.createElement('img');
-            img.src = iconUrl;
-            img.style.width = '40px';
-            img.style.height = '40px';
-            
-            new AdvancedMarkerElement({
-              map: mapInstance.current,
-              position: { lat: parking.latitud, lng: parking.longitud },
-              title: parking.tipo === 'Garaje' ? 'Garaje' : parking.nombre,
-              content: img
-            });
+    const data = await response.json();
+    const { AdvancedMarkerElement } = window.google.maps.marker;
 
-            return {
-              id: parking.id,
-              name: parking.nombre,
-              tipo: parking.tipo,
-              distance,
-              disponibilidad: parking.camposlibres,
-              direccion: parking.direccion,
-              location: {
-                lat: parking.latitud,
-                lng: parking.longitud
-              }
-            };
-          }
-          return null;
-        })
-        .filter(p => p !== null);
+    const cercanos = await Promise.all(data.map(async parking => {
+      const distance = calculateDistance(
+        userLocation.lat,
+        userLocation.lng,
+        parking.latitud,
+        parking.longitud
+      );
 
-      setNearbyParkings(cercanos);
-    } catch (err) {
-      console.error("Error al buscar parqueos:", err);
-     setAlertCustom({ type: 'error', message: 'Error al cargar la los parqueos . Recarga la página.' });
+      if (distance <= 10) {
+        const iconUrl = parking.tipo === 'Garaje' ? garajeimg : parqueoimg;
 
-    }
-  };
+        const img = document.createElement('img');
+        img.src = iconUrl;
+        img.style.width = '40px';
+        img.style.height = '40px';
+
+        new AdvancedMarkerElement({
+          map: mapInstance.current,
+          position: { lat: parking.latitud, lng: parking.longitud },
+          title: parking.tipo === 'Garaje' ? 'Garaje' : parking.nombre,
+          content: img
+        });
+
+        const { promedio, comentarios } = await fetchComentarios(parking.tipo, parking.id);
+
+        return {
+          id: parking.id,
+          name: parking.nombre,
+          tipo: parking.tipo,
+          distance,
+          disponibilidad: parking.camposlibres,
+          direccion: parking.direccion,
+          location: {
+            lat: parking.latitud,
+            lng: parking.longitud
+          },
+          promedio,
+          comentarios
+        };
+      }
+      return null;
+    }));
+
+    setNearbyParkings(cercanos.filter(p => p !== null));
+  } catch (err) {
+    console.error("Error al buscar parqueos:", err);
+    setAlertCustom({ type: 'error', message: 'Error al cargar los parqueos. Recarga la página.' });
+  }
+};
+
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371;
@@ -515,6 +536,20 @@ const body = {
               >
                 <div className="parking-name">{parking.tipo === 'Garaje' ? 'Garaje' : parking.name }</div>
                 <div className="parking-distance">{parking.distance} km</div>
+                <div className="parking-rating">⭐ {parking.promedio || 0} / 5</div>
+                  <button
+                    className="btn btn-sm btn-outline-info mt-1"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setModalComentarios({
+                        mostrar: true,
+                        comentarios: parking.comentarios,
+                        promedio: parking.promedio
+                      });
+                    }}
+                  >
+                    Ver Comentarios
+                  </button>
               </div>
             ))
           ) : (
@@ -541,8 +576,14 @@ const body = {
     message={alertCustom.message}
     onClose={() => setAlertCustom({ type: '', message: '' })}
   />
+  
 )}
-
+<ModalComentarios
+  visible={modalComentarios.mostrar}
+  comentarios={modalComentarios.comentarios}
+  promedio={modalComentarios.promedio}
+  onClose={() => setModalComentarios({ mostrar: false, comentarios: [], promedio: 0 })}
+/>
 
     </div>
   );
