@@ -25,7 +25,7 @@ export const ReservePage = () => {
       return;
     }
 
-    // Aquí podrías almacenar temporalmente los datos o pasarlos vía estado
+   
     navigate('/mapa'); // redirige a la página del mapa
   };
 

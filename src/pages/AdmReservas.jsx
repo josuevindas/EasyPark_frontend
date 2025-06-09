@@ -66,16 +66,16 @@ export const AdmReservas = () => {
  
 
  const marcarComoLlegado = async ({ idReserva, qr_code = null }) => {
+
   const token = localStorage.getItem("easypark_token");
 
   const payload = {};
   if (qr_code) payload.qr_code = qr_code;
   if (idReserva) payload.idReserva = idReserva;
 
-  if (!payload.qr_code && !payload.idReserva) {
-    console.error("Falta qr_code o idReserva");
-    return;
-  }
+  
+  
+
 
   const res = await fetch(`${import.meta.env.VITE_API_URL}/api/propiedades/reservas/completar`, {
     method: "POST",
@@ -108,10 +108,12 @@ export const AdmReservas = () => {
         const audio = new Audio(successSound);
         audio.play();
 
-        await marcarComoLlegado(qrCode);
+        await marcarComoLlegado({ qr_code: qrCode }); // ✅ ahora es un objeto con clave qr_code
+
         scanner.clear();
         setMostrarQRScanner(false);
       });
+
 
       return () => {
         scanner.clear().catch(() => {});
