@@ -1,9 +1,10 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 90px 2rem 2rem; /* 90px arriba para evitar que se tape el texto */
   text-align: center;
 }
+
 
 
 .logo {

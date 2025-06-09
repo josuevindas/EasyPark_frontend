@@ -19,7 +19,7 @@ const [showConfirm, setShowConfirm] = useState(false);
 const [alertCustom, setAlertCustom] = useState({ type: '', message: '' });
 const [comentariosData, setComentariosData] = useState({});
 const [modalComentarios, setModalComentarios] = useState({ mostrar: false, comentarios: [], promedio: 0 });
-
+ const navigate = useNavigate();
 const [duracionViaje, setDuracionViaje] = useState('');
   const [formData, setFormData] = useState({
     origin: '',
