@@ -12,6 +12,7 @@ export const Comentario= () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [comentario, setComentario] = useState("");
   const [puntuacion, setPuntuacion] = useState(0);
+  const [puedeComentar, setPuedeComentar] = useState(true);
 
 useEffect(() => {
     
@@ -36,15 +37,28 @@ useEffect(() => {
       
 
       const data = await res.json();
-      console.log("Datos obtenidos:", data);
       setBusqueda(data.nombre || data.propietario || ""); // Asignar nombre o propietario al campo de búsqueda
       setSeleccionado(data); // debe contener { id, nombre, tipo }
+      verificarSiPuedeComentar(localStorage.getItem("iduser"), data.tipo, data.id);
       setMostrarModal(true);
     } catch (error) {
       console.error("Error buscando por ID:", error);
     }
   };
-  
+  const verificarSiPuedeComentar = async (usuarioId, tipo, propiedadId) => {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/comentarios/puede-comentar/${usuarioId}/${tipo}/${propiedadId}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("easypark_token")}` },
+    });
+
+    const data = await res.json();
+    setPuedeComentar(data.puedeComentar);
+  } catch (error) {
+    console.error("Error al verificar permiso para comentar:", error);
+    setPuedeComentar(false);
+  }
+};
+
 
  const buscar = async () => {
   if (!busqueda.trim()) return;
@@ -141,8 +155,10 @@ useEffect(() => {
             className="list-group-item list-group-item-action"
             onClick={() => {
               setSeleccionado(est);
+              verificarSiPuedeComentar(localStorage.getItem("iduser"), est.tipo, est.id);
               setMostrarModal(true);
             }}
+
           >
             {est.tipo === "garaje" ? `Garaje: ${est.nombre}` : est.nombre}
           </li>
@@ -189,7 +205,13 @@ useEffect(() => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setMostrarModal(false)}>Cancelar</Button>
-          <Button variant="primary" onClick={enviarComentario}>Enviar</Button>
+          <Button variant="primary" onClick={enviarComentario} disabled={!puedeComentar}>Enviar</Button>
+          {!puedeComentar && (
+            <p className="text-danger mt-2">
+              Solo puedes comentar si ya has completado una reserva en este lugar.
+            </p>
+          )}
+
         </Modal.Footer>
       </Modal>
     </div>
