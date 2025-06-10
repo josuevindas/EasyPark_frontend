@@ -1,14 +1,50 @@
 // ComentariosPage.jsx
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+
 
 export const Comentario= () => {
+  const { id } = useParams();
   const [busqueda, setBusqueda] = useState("");
   const [resultados, setResultados] = useState([]);
   const [seleccionado, setSeleccionado] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [comentario, setComentario] = useState("");
   const [puntuacion, setPuntuacion] = useState(0);
+
+useEffect(() => {
+    
+    if (id) {
+      // Buscar por ID automáticamente
+       
+      buscarPorId(id);
+    }
+  }, [id]);
+
+  const buscarPorId = async (id) => {
+    const token = localStorage.getItem("easypark_token");
+    try {
+      
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/comentarios/propiedad/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("No se encontró la propiedad");
+      
+
+      const data = await res.json();
+      console.log("Datos obtenidos:", data);
+      setBusqueda(data.nombre || data.propietario || ""); // Asignar nombre o propietario al campo de búsqueda
+      setSeleccionado(data); // debe contener { id, nombre, tipo }
+      setMostrarModal(true);
+    } catch (error) {
+      console.error("Error buscando por ID:", error);
+    }
+  };
+  
 
  const buscar = async () => {
   if (!busqueda.trim()) return;
@@ -91,7 +127,7 @@ export const Comentario= () => {
       <h2>Nombre del estacionamiento o del propietario(Garaje Privado)</h2>
       <input
         type="text"
-        className="form-control mb-3"
+        className="form-control mb-3 bg-light"
         placeholder="Nombre"
         value={busqueda}
         onChange={(e) => setBusqueda(e.target.value)}

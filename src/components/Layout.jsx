@@ -16,6 +16,8 @@ export const Layout = ({ children, isLoggedIn }) => {
   const isMobile = window.innerWidth <= 768;
 
   useEffect(() => {
+    const token = localStorage.getItem("easypark_token");
+    if (!token) return;
     const obtenerRolYPendientes = async () => {
       try {
         const tipoUsuario = localStorage.getItem("rol");
@@ -28,7 +30,8 @@ export const Layout = ({ children, isLoggedIn }) => {
           const idUsuario = localStorage.getItem("iduser");
           url = `${import.meta.env.VITE_API_URL}/api/propiedades/usuario/${idUsuario}/pendientes`;
         } else if (tipoUsuario === "propietario") {
-          url = `${import.meta.env.VITE_API_URL}/api/propiedades/pendientes`;
+          const idUsuario = localStorage.getItem("iduser");
+          url = `${import.meta.env.VITE_API_URL}/api/propiedades/pendientes/${idUsuario}`;
         }
 
         if (url) {

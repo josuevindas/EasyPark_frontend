@@ -151,14 +151,22 @@ export const ParkAdm = () => {
     setAlertCustom({ type: '', message: '' });
   };
 
-  return (
-    <div className="">
-      <div className="">
-        <h1 className="text-center mb-4">Parqueo/Garaje</h1>
+ return (
+  <div className="Fondo">
+    <div className="content-box">
+      <form onSubmit={(e) => { e.preventDefault(); handleRegistrar(); }}>
+        <div className="text-center mb-4">
+          <img 
+            src="/src/assets/img/logo-easyPark.jpeg" 
+            alt="EasyPark Logo" 
+            className="logo" 
+          />
+          <h2 className="spanLog ">Registro de Parqueo/Garaje</h2>
+        </div>
 
-        <div className="mb-3">
-          <label className="form-label">Tipo de parqueo</label>
-          <select className="form-select" value={tipoParqueo} onChange={(e) => setTipoParqueo(e.target.value)}>
+        <div className="form-group">
+          <label htmlFor="tipoParqueo">Tipo de parqueo</label>
+          <select className="form-select" id="tipoParqueo" value={tipoParqueo} onChange={(e) => setTipoParqueo(e.target.value)}>
             <option value="">Selecciona tipo de parqueo</option>
             <option value="Estacionamientos">Estacionamientos</option>
             <option value="Garajes Privados">Garajes Privados</option>
@@ -166,72 +174,70 @@ export const ParkAdm = () => {
         </div>
 
         {tipoParqueo !== "Garajes Privados" && (
-          <div className="mb-3">
-            <label className="form-label">Nombre del parqueo/garaje</label>
-            <input type="text" className="form-control" value={nombreParqueo} onChange={(e) => setNombreParqueo(e.target.value)} />
+          <div className="form-group">
+            <label htmlFor="nombreParqueo">Nombre del parqueo/garaje</label>
+            <input placeholder="Nombre " type="text" className="form-control bg-light" id="nombreParqueo" value={nombreParqueo} onChange={(e) => setNombreParqueo(e.target.value)} />
           </div>
         )}
 
-        <div className="mb-3">
-          <label className="form-label">Dirección</label>
-          <input type="text" className="form-control" value={direccion} onChange={(e) => setDireccion(e.target.value)} />
+        <div className="form-group">
+          <label htmlFor="direccion">Dirección</label>
+          <input placeholder="Dirección" type="text" className="form-control bg-light" id="direccion" value={direccion} onChange={(e) => setDireccion(e.target.value)} />
         </div>
 
         <div className="row">
-          <div className="col-md-6 mb-3">
-            <label className="form-label">Longitud</label>
-            <input type="text" className="form-control" value={longitud} onChange={(e) => setLongitud(e.target.value)} />
+          <div className="form-group col-md-6">
+            <label htmlFor="longitud">Longitud</label>
+            <input placeholder="Longitud" type="text" className="form-control bg-light" id="longitud" value={longitud} onChange={(e) => setLongitud(e.target.value)} />
           </div>
-          <div className="col-md-6 mb-3">
-            <label className="form-label">Latitud</label>
-            <input type="text" className="form-control" value={latitud} onChange={(e) => setLatitud(e.target.value)} />
+          <div className="form-group col-md-6">
+            <label htmlFor="latitud">Latitud</label>
+            <input placeholder="Latitud " type="text" className="form-control bg-light" id="latitud" value={latitud} onChange={(e) => setLatitud(e.target.value)} />
           </div>
         </div>
 
         <div className="row">
-          <div className="col-md-6 mb-3">
-            <label className="form-label">Altura del campo (m)</label>
-            <input type="number" className="form-control" value={alturaEspacio} onChange={(e) => setAlturaEspacio(e.target.value)} />
+          <div className="form-group col-md-6">
+            <label htmlFor="alturaEspacio">Altura del campo (m)</label>
+            <input placeholder="Altura " type="number" className="form-control bg-light" id="alturaEspacio" value={alturaEspacio} onChange={(e) => setAlturaEspacio(e.target.value)} />
           </div>
-          <div className="col-md-6 mb-3">
-            <label className="form-label">Anchura del campo (m)</label>
-            <input type="number" className="form-control" value={anchuraEspacio} onChange={(e) => setAnchuraEspacio(e.target.value)} />
+          <div className="form-group col-md-6">
+            <label htmlFor="anchuraEspacio">Anchura del campo (m)</label>
+            <input placeholder="Anchura" type="number" className="form-control bg-light" id="anchuraEspacio" value={anchuraEspacio} onChange={(e) => setAnchuraEspacio(e.target.value)} />
           </div>
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">Cantidad de campos</label>
-          <input type="number" className="form-control" value={disponibilidad} onChange={(e) => setCantidadCampos(e.target.value)} />
+        <div className="form-group">
+          <label htmlFor="disponibilidad">Cantidad de campos</label>
+          <input placeholder="Cantidad" type="number" className="form-control bg-light" id="disponibilidad" value={disponibilidad} onChange={(e) => setCantidadCampos(e.target.value)} />
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">Horario</label>
-          <input type="text" className="form-control" value={horario} onChange={(e) => setHorario(e.target.value)} />
+        <div className="form-group">
+          <label htmlFor="horario">Horario</label>
+          <input placeholder="Horario" type="text" className="form-control bg-light" id="horario" value={horario} onChange={(e) => setHorario(e.target.value)} />
         </div>
 
         <div className="row align-items-end">
-          <div className="col-md-6 mb-3">
-            <label className="form-label">Tipo de vehículo</label>
-            <input type="text" className="form-control" value={nuevoVehiculo} onChange={(e) => setNuevoVehiculo(e.target.value)} onKeyDown={(e) => e.key === "Enter" && agregarVehiculo()} />
+          <div className="form-group col-md-6">
+            <label htmlFor="nuevoVehiculo">Tipo de vehículo</label>
+            <input placeholder="Vehículo" type="text" className="form-control bg-light" id="nuevoVehiculo" value={nuevoVehiculo} onChange={(e) => setNuevoVehiculo(e.target.value)} onKeyDown={(e) => e.key === "Enter" && agregarVehiculo()} />
           </div>
-          <div className="col-md-4 mb-3">
-            <label className="form-label">Precio por hora</label>
-            <input type="text" className="form-control" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} onKeyDown={(e) => e.key === "Enter" && agregarVehiculo()} />
-          </div>
-          <div className="col-md-2 mb-3 d-flex gap-2">
-            <button className="btn btn-primary btn-vehiculo" onClick={agregarVehiculo}>+</button>
-            <button className="btn btn-danger btn-vehiculo" onClick={eliminarVehiculo}>-</button>
+          <div className="form-group col-md-6">
+            <label htmlFor="nuevoPrecio">Precio por hora</label>
+            <input placeholder="Precio" type="text" className="form-control bg-light" id="nuevoPrecio" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} onKeyDown={(e) => e.key === "Enter" && agregarVehiculo()} />
           </div>
         </div>
 
-        {/* TABLA EN PANTALLAS GRANDES */}
+        <div className="form-group d-flex gap-2">
+          <button type="button" className="btn btn-primary btn-vehiculo" onClick={agregarVehiculo}>+</button>
+          <button type="button" className="btn btn-danger btn-vehiculo" onClick={eliminarVehiculo}>-</button>
+        </div>
+
+        {/* Tabla escritorio */}
         <div className="d-none d-md-block table-responsive mb-3">
           <table className="table table-bordered text-center">
             <thead className="table-light">
-              <tr>
-                <th>Vehículo</th>
-                <th>Precio</th>
-              </tr>
+              <tr><th>Vehículo</th><th>Precio</th></tr>
             </thead>
             <tbody>
               {vehiculos.length === 0 ? (
@@ -248,33 +254,27 @@ export const ParkAdm = () => {
           </table>
         </div>
 
-        {/* TARJETAS EN CELULAR */}
+        {/* Cards móvil */}
         <div className="d-block d-md-none mb-3">
-          {vehiculos.length === 0 ? (
-            <p className="text-center">No hay vehículos registrados</p>
-          ) : (
-            vehiculos.map((v, i) => (
-              <div
-                key={i}
-                className={`card mb-2 shadow-sm ${filaSeleccionada === i ? "border-primary" : ""}`}
-                onClick={() => setFilaSeleccionada(i)}
-                style={{ cursor: "pointer" }}
-              >
-                <div className="card-body">
-                  <h6 className="card-title mb-1">Vehículo: {v.tipo}</h6>
-                  <p className="card-text mb-0"><strong>Precio por hora:</strong> ₡{v.precio}</p>
-                </div>
+          {vehiculos.map((v, i) => (
+            <div key={i} className={`card mb-2 shadow-sm ${filaSeleccionada === i ? "border-primary" : ""}`} onClick={() => setFilaSeleccionada(i)} style={{ cursor: "pointer" }}>
+              <div className="card-body">
+                <h6 className="card-title mb-1">Vehículo: {v.tipo}</h6>
+                <p className="card-text mb-0"><strong>Precio por hora:</strong> ₡{v.precio}</p>
               </div>
-            ))
-          )}
+            </div>
+          ))}
         </div>
 
-        <div className="text-center">
-          <button className="btn btn-success w-100" onClick={handleRegistrar}>Registrar</button>
+        <div className="form-group">
+          <button type="submit" className="btn btn-success w-100 py-2">
+            Registrar Parqueo/Garaje
+          </button>
         </div>
+      </form>
 
-        <Alert type={alertCustom.type} message={alertCustom.message} onClose={handleCloseAlert} />
-      </div>
+      <Alert type={alertCustom.type} message={alertCustom.message} onClose={handleCloseAlert} />
     </div>
-  );
-};
+  </div>
+);
+}

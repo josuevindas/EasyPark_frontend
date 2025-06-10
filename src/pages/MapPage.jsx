@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../assets/css/MapPage.css';
+import { useNavigate } from "react-router-dom";
 import garajeimg from "../assets/img/garage.png";
 import parqueoimg from "../assets/img/parking.png";
 import { Alert, Confirm } from '../components/ModalAlert';
@@ -489,12 +490,12 @@ const body = {
         </div>
       )}
       {selectedParking && (
-        <div className="info-panel bg-light p-3 shadow rounded position-absolute" style={{ bottom: 20, left: 20, zIndex: 1000, width: window.innerWidth <= 768 ? '100%' : 'auto' }}>
-          <h5>{selectedParking.tipo}</h5>
+        <div className="info-panel bg-light p-3 shadow rounded position-absolute" style={{color: '#212529', bottom: 20, left: 20, zIndex: 1000, width: window.innerWidth <= 768 ? '100%' : 'auto' }}>
+          <h5 style={{color: '#212529'}}>{selectedParking.tipo}</h5>
           
-           <p><strong>Dirección:</strong> {selectedParking.direccion}</p>
-          <p><strong>Campos Libres:</strong> {selectedParking.disponibilidad}</p>
-          <p><strong>Duración estimada:</strong> {duracionViaje}</p>
+           <p style={{color: '#212529'}}><strong>Dirección:</strong> {selectedParking.direccion}</p>
+          <p style={{color: '#212529'}}><strong>Campos Libres:</strong> {selectedParking.disponibilidad}</p>
+          <p style={{color: '#212529'}}><strong>Duración estimada:</strong> {duracionViaje}</p>
         
           <button className="btn btn-primary mt-2" onClick={handleReservar}>
             Reservar
@@ -544,7 +545,8 @@ const body = {
                       setModalComentarios({
                         mostrar: true,
                         comentarios: parking.comentarios,
-                        promedio: parking.promedio
+                        promedio: parking.promedio,
+                        id: parking.id
                       });
                     }}
                   >
@@ -582,7 +584,8 @@ const body = {
   visible={modalComentarios.mostrar}
   comentarios={modalComentarios.comentarios}
   promedio={modalComentarios.promedio}
-  onClose={() => setModalComentarios({ mostrar: false, comentarios: [], promedio: 0 })}
+  id={modalComentarios.id}  
+  onClose={() => setModalComentarios({ mostrar: false, comentarios: [], promedio: 0, id: null })}
 />
 
     </div>

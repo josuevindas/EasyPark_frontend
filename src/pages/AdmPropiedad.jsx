@@ -103,7 +103,7 @@ export const AdministrarPropiedad = () => {
 
                 <input
                 type="number"
-                className="form-control campo-input"
+                className="form-control campo-input   bg-light"
                 value={valorCambio}
                 onChange={(e) => {
                     const val = parseInt(e.target.value);
@@ -119,23 +119,23 @@ export const AdministrarPropiedad = () => {
                 <button className="btn btn-outline-secondary" onClick={aumentar}>+</button>
             </div>
 
-            <div className="form-text">
-                <strong>Actual:</strong> {camposLibres} / <strong>Disponibilidad total:</strong> {disponibilidad}
+            <div className="form-text text-white">
+                <strong className="text-white">Actual:</strong> {camposLibres} / <strong className="text-white">Disponibilidad total:</strong> {disponibilidad}
             </div>
             </div>
 
             {tipo === 'Garaje' && (
                 <div className="estado-container">
                     <div className="estado-cuadro">
-                    <label className="form-label fs-5">Estado</label>
+                    <label className="form-label fs-5 bg-light">Estado</label>
                     <div
-                        className="estado-toggle"
+                        className="estado-toggle bg-light"
                         onClick={() => setEstado(prev => !prev)}
                     >
-                        <div className="estado-icon">
+                        <div className="estado-icon ">
                         {estado ? <ToggleRight color="#28a745" size={70} /> : <ToggleLeft color="#dc3545" size={70} />}
                         </div>
-                        <div className="estado-label">
+                        <div className="estado-label ">
                         {estado ? "Disponible" : "Ocupado"}
                         </div>
                     </div>

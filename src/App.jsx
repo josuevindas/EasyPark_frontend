@@ -42,6 +42,7 @@ function App() {
           <Route path="/AdmReservas" element={<AdmReservas />} />
           <Route path="/MapaReserva" element={<MapaReserva />} />
           <Route path="/EditarPropiedad/:id/:tipo" element={<EditarPropiedad />} />
+          <Route path="/Comentario/:id" element={<Comentario />} />
           <Route path="/Comentario" element={<Comentario />} />
            <Route path="/AdministrarPropiedad/:id/:tipo" element={<AdministrarPropiedad />} />
            <Route path="/ReservasPage" element={<ReservasPage />} />

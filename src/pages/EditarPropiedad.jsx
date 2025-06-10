@@ -109,7 +109,7 @@ export const EditarPropiedad = () => {
                 name={campo}
                 value={form[campo] || ''}
                 onChange={handleChange}
-                className="form-control"
+                className="form-control bg-light"
               />
             </div>
           );
@@ -123,27 +123,28 @@ export const EditarPropiedad = () => {
           <label className="form-label">Tipo de vehículo</label>
           <input
             type="text"
-            className="form-control"
+            className="form-control bg-light"
             value={nuevoVehiculo}
             onChange={(e) => setNuevoVehiculo(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && agregarVehiculo()}
           />
         </div>
-        <div className="col-md-4 mb-3">
+        <div className="col-md-6 mb-3">
           <label className="form-label">Precio por hora</label>
           <input
             type="text"
-            className="form-control"
+            className="form-control bg-light"
             value={nuevoPrecio}
             onChange={(e) => setNuevoPrecio(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && agregarVehiculo()}
           />
         </div>
-        <div className="col-md-2 mb-3 d-flex gap-2">
+       
+      </div>
+       <div className="col-md-2 mb-3 d-flex gap-2">
           <button className="btn btn-primary" onClick={agregarVehiculo}>+</button>
           <button className="btn btn-danger" onClick={eliminarVehiculo}>-</button>
         </div>
-      </div>
 
       {/* Tabla para pantallas grandes */}
       <div className="d-none d-md-block table-responsive mb-3">

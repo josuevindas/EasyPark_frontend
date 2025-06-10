@@ -21,8 +21,15 @@ export const AdmReservas = () => {
 
   const cargarReservas = async () => {
     const token = localStorage.getItem("easypark_token");
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/propiedades/pendientes-confirmadas`, {
-      headers: { Authorization: `Bearer ${token}` }
+    const propietarioId = localStorage.getItem("iduser"); 
+     const res = await fetch(`${import.meta.env.VITE_API_URL}/api/propiedades/pendientes-confirmadas`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ propietarioId  }) 
+
     });
     const data = await res.json();
     
@@ -157,7 +164,7 @@ export const AdmReservas = () => {
         <Button variant="primary" onClick={iniciarQRScanner}>📷 Escanear QR</Button>
       </div>
 
-      <div className="input-group mb-3">
+      <div className="input-group mb-3 bg-light">
         <Form.Control
           placeholder="Buscar por nombre de usuario"
           value={busquedaUsuario}
@@ -165,9 +172,9 @@ export const AdmReservas = () => {
         />
       </div>
 
-      <div className="btn-group mb-3">
-        <Button variant={tab === "pendientes" ? "dark" : "outline-dark"} onClick={() => setTab("pendientes")}>Pendientes</Button>
-        <Button variant={tab === "confirmadas" ? "dark" : "outline-dark"} onClick={() => setTab("confirmadas")}>Confirmadas</Button>
+      <div className="btn-group mb-3 " >
+        <Button  className="bg-info" variant={tab === "pendientes" ? "dark" : "outline-dark"} onClick={() => setTab("pendientes")}>Pendientes</Button>
+        <Button className="bg-info" variant={tab === "confirmadas" ? "dark" : "outline-dark"} onClick={() => setTab("confirmadas")}>Confirmadas</Button>
       </div>
 
       {tab === "pendientes" && reservasFiltradas(pendientes).map(reserva => (

@@ -147,7 +147,7 @@ export const EditarUsuario = () => {
       >
         <input
           type="password"
-          className="form-control mb-3"
+          className="form-control mb-3 bg-light"
           placeholder="Contraseña"
           value={passwordIngreso}
           
@@ -183,7 +183,7 @@ export const EditarUsuario = () => {
         <label className="form-label">Nombre</label>
         <input
           type="text"
-          className="form-control"
+          className="form-control bg-light"
           name="nombre"
           autoComplete="username"
           value={form.nombre}
@@ -195,7 +195,7 @@ export const EditarUsuario = () => {
         <label className="form-label">Correo</label>
         <input
           type="email"
-          className={`form-control ${erroresCampo.email ? 'is-invalid' : ''}`}
+          className={`form-control bg-light ${erroresCampo.email ? 'is-invalid' : ''}`}
           name="email"
           autoComplete="email"
           value={form.email}
@@ -208,7 +208,7 @@ export const EditarUsuario = () => {
         <label className="form-label">Teléfono</label>
         <input
           type="tel"
-          className={`form-control ${erroresCampo.telefono ? 'is-invalid' : ''}`}
+          className={`form-control bg-light ${erroresCampo.telefono ? 'is-invalid' : ''}`}
           name="telefono"
           autoComplete="telefono"
           value={form.telefono}
@@ -222,7 +222,7 @@ export const EditarUsuario = () => {
         <div className="input-group">
           <input
             type={mostrar ? 'text' : 'password'}
-            className={`form-control ${erroresCampo.password ? 'is-invalid' : ''}`}
+            className={`form-control bg-light ${erroresCampo.password ? 'is-invalid' : ''}`}
             name="password"
             autoComplete="password"
             value={form.password}
