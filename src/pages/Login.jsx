@@ -4,6 +4,7 @@ import { Alert, Confirm } from "../components/ModalAlert";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { firebaseConfig } from '../config/firebaseConfig.js';
+import logo from "../assets/img/logo-easyPark.jpeg";
 import { Eye, EyeOff } from 'lucide-react';
 import '../assets/css/Login.css';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -86,7 +87,7 @@ export const Login = () => {
         <form onSubmit={handleLogin}>
           <div className="text-center mb-4">
             <img 
-              src="/src/assets/img/logo-easyPark.jpeg" 
+              src={logo}
               alt="EasyPark Logo" 
               className="logo" 
             />

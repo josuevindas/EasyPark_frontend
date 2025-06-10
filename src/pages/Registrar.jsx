@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/css/Registrar.css'; 
 import '../assets/css/Modal.css';
+import logo from "../assets/img/logo-easyPark.jpeg";
 import { Alert, Confirm } from "../components/ModalAlert";
 import { useNavigate } from "react-router-dom";
 import { initializeApp } from "firebase/app";
@@ -63,7 +64,7 @@ export const Registrar = () => {
         <form onSubmit={onRegistrar}>
           <div className="text-center mb-4">
             <img 
-              src="/src/assets/img/logo-easyPark.jpeg" 
+              src={logo}
               alt="EasyPark Logo" 
               className="logo" 
             />

@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../assets/css/ParkAdm.css";
 import { Alert } from "../components/ModalAlert";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/img/logo-easyPark.jpeg";
 
 export const ParkAdm = () => {
   const [vehiculos, setVehiculos] = useState([]);
@@ -157,7 +158,7 @@ export const ParkAdm = () => {
       <form onSubmit={(e) => { e.preventDefault(); handleRegistrar(); }}>
         <div className="text-center mb-4">
           <img 
-            src="/src/assets/img/logo-easyPark.jpeg" 
+            src={logo}
             alt="EasyPark Logo" 
             className="logo" 
           />
