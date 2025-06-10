@@ -98,12 +98,13 @@ export const Login = () => {
             <label htmlFor="email">Correo Electrónico</label>
             <input
               type="email"
-              className="form-control"
+              className="form-control mostrar-pass-btn"
               autoComplete="email"
               id="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
+              
               placeholder="tu@email.com"
             />
           </div>
@@ -123,7 +124,7 @@ export const Login = () => {
               />
               <button
                 type="button"
-                className="btn btn-outline-secondary"
+                className="btn btn-outline-secondary btn-sm"
                 onClick={() => setMostrar(!mostrar)}
                 aria-label={mostrar ? "Ocultar contraseña" : "Mostrar contraseña"}
               >
