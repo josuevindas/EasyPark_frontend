@@ -537,7 +537,7 @@ const body = {
               >
                 <div className="parking-name">{parking.tipo === 'Garaje' ? 'Garaje' : parking.name }</div>
                 <div className="parking-distance">{parking.distance} km</div>
-                <div className="parking-rating bg-black">⭐ {parking.promedio || 0} / 5</div>
+                <div className="parking-rating text-black">⭐ {parking.promedio || 0} / 5</div>
                   <button
                     className="btn btn-sm btn-outline-info mt-1"
                     onClick={(e) => {

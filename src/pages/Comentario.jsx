@@ -12,7 +12,7 @@ export const Comentario= () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [comentario, setComentario] = useState("");
   const [puntuacion, setPuntuacion] = useState(0);
-  const [puedeComentar, setPuedeComentar] = useState(true);
+  const [puedeComentar, setPuedeComentar] = useState(false);
 
 useEffect(() => {
     
@@ -52,6 +52,7 @@ useEffect(() => {
     });
 
     const data = await res.json();
+    console.log("Respuesta de permiso para comentar:", data);
     setPuedeComentar(data.puedeComentar);
   } catch (error) {
     console.error("Error al verificar permiso para comentar:", error);
