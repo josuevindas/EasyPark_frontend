@@ -156,13 +156,13 @@ export const Registrar = () => {
 
          <div className="form-check mt-3 mb-4 d-flex align-items-center gap-2 checkbox-dark">
           <input
-            className="form-check-input m-0"
+            className="form-check-input m-0 border-black"
             type="checkbox"
             id="checkAcuerdo"
             checked={aceptoTerminos}
             onChange={(e) => setAceptoTerminos(e.target.checked)}
           />
-          <label className="form-check-label m-0" htmlFor="checkAcuerdo">
+          <label className="form-check-label m-0 text-black" htmlFor="checkAcuerdo">
             Acepto los{" "}
             <button type="button" className="btn btn-link p-0" onClick={() => setShowAcuerdo(true)}>
               Términos de usuario
