@@ -12,7 +12,6 @@ export const ParkAdm = () => {
   const [filaSeleccionada, setFilaSeleccionada] = useState(null);
   const [tipoParqueo, setTipoParqueo] = useState("");
   const [horario, setHorario] = useState("");
-  const fechaRegistro = new Date().toISOString();
   const [nombreParqueo, setNombreParqueo] = useState("");
   const [alturaEspacio, setAlturaEspacio] = useState("");
   const [anchuraEspacio, setAnchuraEspacio] = useState("");
@@ -99,7 +98,7 @@ export const ParkAdm = () => {
           disponibilidad,
           anchura: anchuraEspacio,
           altura: alturaEspacio,
-          fecha_inscripcion: fechaRegistro,
+          fecha_inscripcion: new Date().toISOString(),
           vehiculos: vehiculos.map(v => ({
             tipo_vehiculo: v.tipo,
             tarifa_hora: v.precio
@@ -214,9 +213,35 @@ export const ParkAdm = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="horario">Horario</label>
-          <input placeholder="Horario" type="text" className="form-control bg-light" id="horario" value={horario} onChange={(e) => setHorario(e.target.value)} />
+          <label htmlFor="horario">Horario de atención</label>
+          <div className="d-flex gap-2">
+            <div className="w-50">
+              <label>Desde</label>
+              <input
+                type="time"
+                className="form-control bg-light"
+                value={horario?.split(" - ")[0] || ""}
+                onChange={(e) => {
+                  const hasta = horario?.split(" - ")[1] || "";
+                  setHorario(`${e.target.value} - ${hasta}`);
+                }}
+              />
+            </div>
+            <div className="w-50">
+              <label>Hasta</label>
+              <input
+                type="time"
+                className="form-control bg-light"
+                value={horario?.split(" - ")[1] || ""}
+                onChange={(e) => {
+                  const desde = horario?.split(" - ")[0] || "";
+                  setHorario(`${desde} - ${e.target.value}`);
+                }}
+              />
+            </div>
+          </div>
         </div>
+
 
         <div className="row align-items-end">
           <div className="form-group col-md-6">

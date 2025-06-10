@@ -106,12 +106,6 @@ export const ReservasPage = () => {
                       Navegar
                     </Button>
                     <Button
-                      variant="secondary"
-                      onClick={() => navigate("/MapaReserva", { state: reserva })}
-                    >
-                      Ver Mapa
-                    </Button>
-                    <Button
                       variant="danger"
                       onClick={() => cancelarReserva(reserva.idReserva)}
                     >

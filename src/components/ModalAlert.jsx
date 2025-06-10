@@ -23,8 +23,8 @@ export const Alert = ({ type, message, onClose }) => {
     <div className="overlay">
       <div className="alert">
         <div className="icon">{Icons[type] || '🔔'}</div>
-        <div className="title">{Titles[type]}</div>
-        <div className="message">{message}</div>
+        <div className="title text-black">{Titles[type]}</div>
+        <div className="message text-black">{message}</div>
         <div className="wrapper-buttons">
           <button className="" onClick={onClose}>
             Aceptar
@@ -42,8 +42,8 @@ export const Confirm = ({ type = 'confirm', message, onConfirm, onClose }) => {
     <div className="overlay">
       <div className="alert">
         <div className="icon">{Icons[type] || '❓'}</div>
-        <div className="title">{Titles[type]}</div>
-        <div className="message">{message}</div>
+        <div className="title text-black">{Titles[type]}</div>
+        <div className="message text-black">{message}</div>
         <div className="wrapper-buttons">
           <button onClick={onConfirm}>Confirmar</button>
           <button onClick={onClose}>Cancelar</button>

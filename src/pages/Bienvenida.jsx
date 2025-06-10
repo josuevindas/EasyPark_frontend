@@ -29,22 +29,22 @@ export const Bienvenida = () => {
       case "Admin":
         return (
           <>
-            <FaUserShield size={50} className="text-primary mb-2" />
-            <p className="lead">Puedes gestionar usuarios y aprobar parqueos pendientes.</p>
+            <FaUserShield size={50} className="text-success mb-2" />
+            <p className="lead text-success">Puedes gestionar usuarios y aprobar parqueos pendientes.</p>
           </>
         );
       case "propietario":
         return (
           <>
             <FaParking size={50} className="text-success mb-2" />
-            <p className="lead">Puedes registrar nuevos parqueos disponibles.</p>
+            <p className="lead text-success">Puedes registrar nuevos parqueos disponibles.</p>
           </>
         );
       case "cliente":
         return (
           <>
-            <FaUserCheck size={50} className="text-info mb-2" />
-            <p className="lead">Busca parqueos y realiza reservas fácilmente.</p>
+            <FaUserCheck size={50} className="text-success mb-2" />
+            <p className="lead text-success">Busca parqueos y realiza reservas fácilmente.</p>
           </>
         );
       default:
@@ -53,17 +53,17 @@ export const Bienvenida = () => {
   };
 
   return (
-    <div className="container py-5 text-center fade-in">
+    <div className="container py-5 text-center fade-in text-success">
       <img
         src={bienvenidoImg}
         alt="Bienvenido"
-        className="img-fluid mb-4 rounded shadow-sm animate-slide"
+        className="img-fluid mb-4 rounded shadow-sm animate-slide text-success"
         style={{ maxWidth: "300px" }}
       />
-      <h1 className="fw-bold">¡Bienvenido(a), {nombre}!</h1>
-      <p className="lead">Has iniciado sesión como <strong>{rol}</strong>.</p>
+      <h1 className="fw-bold text-success">¡Bienvenido(a), {nombre}!</h1>
+      <p className="lead text-success">Has iniciado sesión como <strong>{rol}</strong>.</p>
       
-      <div className="mt-4">
+      <div className="mt-4 text-center text-success">
         {renderRolDescripcion()}
       </div>
     </div>

@@ -95,8 +95,8 @@ export const EditarPropiedad = () => {
       <h2>Editar {tipo}</h2>
 
       <div className="row">
-        {Object.keys(form).map((campo) => {
-          const camposExcluidos = ['camposLibres', 'vehiculos', 'estado'];
+       {Object.keys(form).map((campo) => {
+          const camposExcluidos = ['camposLibres', 'vehiculos', 'estado', 'horario'];
           const excluirPorTipo = tipo === 'Garaje' && campo === 'nombre';
 
           if (camposExcluidos.includes(campo) || excluirPorTipo) return null;
@@ -114,6 +114,37 @@ export const EditarPropiedad = () => {
             </div>
           );
         })}
+
+        {/* Campo horario al final */}
+        <div className="col-md-6 mb-3">
+          <label className="form-label">Horario</label>
+          <div className="d-flex gap-2">
+            <div className="w-50">
+              <label>Desde</label>
+              <input
+                type="time"
+                className="form-control bg-light"
+                value={form.horario?.split(" - ")[0] || ""}
+                onChange={(e) => {
+                  const hasta = form.horario?.split(" - ")[1] || "";
+                  setForm({ ...form, horario: `${e.target.value} - ${hasta}` });
+                }}
+              />
+            </div>
+            <div className="w-50">
+              <label>Hasta</label>
+              <input
+                type="time"
+                className="form-control bg-light"
+                value={form.horario?.split(" - ")[1] || ""}
+                onChange={(e) => {
+                  const desde = form.horario?.split(" - ")[0] || "";
+                  setForm({ ...form, horario: `${desde} - ${e.target.value}` });
+                }}
+              />
+            </div>
+          </div>
+        </div>
 
       </div>
 
